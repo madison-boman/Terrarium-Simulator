@@ -252,23 +252,15 @@ export default function App() {
   const nextId = useRef(300);
   function getNextId() { return nextId.current++; }
 
-  const [snails, setSnails] = useState(() =>
-    Array.from({ length: 2 }, (_, i) => createSnail(i + 1))
-  );
+  const [snails, setSnails] = useState([]);
   const [pillBugs, setPillBugs] = useState([]);
   const [spiders, setSpiders] = useState([]);
   const [worms, setWorms] = useState([]);
-  const [plants, setPlants] = useState(() => [
-    createPlant(101, 'moss'),
-    createPlant(102, 'fern'),
-    createPlant(103, 'flower'),
-  ]);
-  const [microbes, setMicrobes] = useState(() =>
-    Array.from({ length: 10 }, (_, i) => createMicrobe(201 + i))
-  );
-  const [soilLayers, setSoilLayers] = useState(1);
+  const [plants, setPlants] = useState([]);
+  const [microbes, setMicrobes] = useState([]);
+  const [soilLayers, setSoilLayers] = useState(0);
   const [sandLayers, setSandLayers] = useState(0);
-  const [message, setMessage] = useState('Build your terrarium, then press Play.');
+  const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
 
   const snailSprite = useAsset('/assets/creatures/snail.png');
   const snailSingle = useAsset('/assets/creatures/snail-full.png');
@@ -390,7 +382,7 @@ export default function App() {
   const humidityFogOpacity = clamp((humidity - 50) / 70, 0, 0.8);
   const waterFxOpacity = clamp((humidity - 62) / 38, 0, 0.92);
   const jarOpen = humidity > 72 || running;
-  const groundHeight = 28 + soilLayers * 4 + sandLayers * 3;
+  const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 + sandLayers * 3 : sandLayers * 3;
 
   function addCreature(type) {
     const id = getNextId();
@@ -420,6 +412,37 @@ export default function App() {
     }
   }
 
+  function removeCreature(type) {
+    switch (type) {
+      case 'pillbug': setPillBugs(c => c.length ? c.slice(0, -1) : c); break;
+      case 'snail':   setSnails(c => c.length ? c.slice(0, -1) : c); break;
+      case 'spider':  setSpiders(c => c.length ? c.slice(0, -1) : c); break;
+      case 'worm':    setWorms(c => c.length ? c.slice(0, -1) : c); break;
+    }
+  }
+
+  function removePlant(type) {
+    setPlants(c => {
+      const idx = c.findLastIndex(p => p.type === type);
+      if (idx === -1) return c;
+      return [...c.slice(0, idx), ...c.slice(idx + 1)];
+    });
+  }
+
+  function removeMoisture() {
+    setHumidity(v => clamp(v - 8, 0, 100));
+  }
+
+  function removeSubstrate(type) {
+    if (type === 'soil') {
+      setSoilLayers(v => Math.max(v - 1, 0));
+      setSoil(v => clamp(v - 6, 0, 100));
+    } else {
+      setSandLayers(v => Math.max(v - 1, 0));
+      setWaterCycle(v => clamp(v - 5, 0, 100));
+    }
+  }
+
   function resetWorld() {
     setRunning(false);
     setDay(0);
@@ -428,15 +451,15 @@ export default function App() {
     setLighting(58);
     setSoil(56);
     setWaterCycle(52);
-    setSoilLayers(1);
+    setSoilLayers(0);
     setSandLayers(0);
-    setSnails(Array.from({ length: 2 }, (_, i) => createSnail(i + 1)));
+    setSnails([]);
     setPillBugs([]);
     setSpiders([]);
     setWorms([]);
-    setPlants([createPlant(101, 'moss'), createPlant(102, 'fern'), createPlant(103, 'flower')]);
-    setMicrobes(Array.from({ length: 10 }, (_, i) => createMicrobe(201 + i)));
-    setMessage('Terrarium reset. Build your ecosystem!');
+    setPlants([]);
+    setMicrobes([]);
+    setMessage('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
     nextId.current = 300;
   }
 
@@ -453,34 +476,35 @@ export default function App() {
         <div className="side-panel">
           <h2 className="panel-heading">Creatures & Elements</h2>
           <div className="item-grid">
-            <button className="item-card" onClick={() => addCreature('pillbug')}>
-              <PillBugIcon />
-              <span className="item-name">Pill Bug</span>
-              {livingPillBugs > 0 && <span className="badge">{livingPillBugs}</span>}
-            </button>
-            <button className="item-card" onClick={() => addCreature('snail')}>
-              <SnailIcon />
-              <span className="item-name">Snail</span>
-              {livingSnails > 0 && <span className="badge">{livingSnails}</span>}
-            </button>
-            <button className="item-card" onClick={() => addCreature('spider')}>
-              <SpiderIcon />
-              <span className="item-name">Spider</span>
-              {livingSpiders > 0 && <span className="badge">{livingSpiders}</span>}
-            </button>
-            <button className="item-card" onClick={() => addCreature('worm')}>
-              <WormIcon />
-              <span className="item-name">Worm</span>
-              {livingWorms > 0 && <span className="badge">{livingWorms}</span>}
-            </button>
+            {[
+              { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length },
+              { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length },
+              { type: 'spider', icon: <SpiderIcon />, label: 'Spider', count: spiders.length },
+              { type: 'worm', icon: <WormIcon />, label: 'Worm', count: worms.length },
+            ].map(({ type, icon, label, count }) => (
+              <div className="item-card" key={type}>
+                {icon}
+                <span className="item-name">{label}</span>
+                <div className="card-controls">
+                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => removeCreature(type)}>−</button>
+                  <span className="ctrl-count">{count}</span>
+                  <button className="ctrl-btn plus" onClick={() => addCreature(type)}>+</button>
+                </div>
+              </div>
+            ))}
           </div>
-          <button className="item-card moisture-card" onClick={addMoisture}>
+          <div className="item-card moisture-card">
             <WaterDropIcon />
             <div className="moisture-text">
-              <span className="item-name">Add Moisture</span>
+              <span className="item-name">Moisture</span>
               <span className="item-sub">(Water)</span>
             </div>
-          </button>
+            <div className="card-controls">
+              <button className="ctrl-btn minus" disabled={humidity <= 0} onClick={removeMoisture}>−</button>
+              <span className="ctrl-count">{humidity}%</span>
+              <button className="ctrl-btn plus" disabled={humidity >= 100} onClick={addMoisture}>+</button>
+            </div>
+          </div>
         </div>
 
         {/* Center: Glass Jar */}
@@ -492,7 +516,9 @@ export default function App() {
                 {sandLayers > 0 && (
                   <div className="sand-layer" style={{ height: `${8 + sandLayers * 3}%` }} />
                 )}
-                <div className="ground" style={{ height: `${groundHeight}%` }} />
+                {soilLayers > 0 && (
+                  <div className="ground" style={{ height: `${groundHeight}%` }} />
+                )}
                 <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
                 {fogSprite.ready && humidity > 52 && (
                   <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
@@ -584,38 +610,32 @@ export default function App() {
         <div className="side-panel">
           <h2 className="panel-heading">Plants & Substrate</h2>
           <div className="item-grid">
-            <button className="item-card" onClick={() => addPlant('moss')}>
-              <MossIcon />
-              <span className="item-name">Moss</span>
-              {plants.filter(p => p.type === 'moss').length > 0 && (
-                <span className="badge">{plants.filter(p => p.type === 'moss').length}</span>
-              )}
-            </button>
-            <button className="item-card" onClick={() => addPlant('fern')}>
-              <FernIcon />
-              <span className="item-name">Fern</span>
-              {plants.filter(p => p.type === 'fern').length > 0 && (
-                <span className="badge">{plants.filter(p => p.type === 'fern').length}</span>
-              )}
-            </button>
-            <button className="item-card" onClick={() => addPlant('flower')}>
-              <FlowerIcon />
-              <span className="item-name">Flower</span>
-              {plants.filter(p => p.type === 'flower').length > 0 && (
-                <span className="badge">{plants.filter(p => p.type === 'flower').length}</span>
-              )}
-            </button>
-            <button className="item-card" onClick={() => addSubstrate('soil')}>
-              <SoilIcon />
-              <span className="item-name">Soil</span>
-              {soilLayers > 1 && <span className="badge">{soilLayers}</span>}
-            </button>
+            {[
+              { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length },
+              { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length },
+              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length },
+              { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers },
+            ].map(({ type, icon, label, count }) => (
+              <div className="item-card" key={type}>
+                {icon}
+                <span className="item-name">{label}</span>
+                <div className="card-controls">
+                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => type === 'soil' ? removeSubstrate('soil') : removePlant(type)}>−</button>
+                  <span className="ctrl-count">{count}</span>
+                  <button className="ctrl-btn plus" onClick={() => type === 'soil' ? addSubstrate('soil') : addPlant(type)}>+</button>
+                </div>
+              </div>
+            ))}
           </div>
-          <button className="item-card sand-card" onClick={() => addSubstrate('sand')}>
+          <div className="item-card sand-card">
             <SandIcon />
             <span className="item-name">Sand</span>
-            {sandLayers > 0 && <span className="badge">{sandLayers}</span>}
-          </button>
+            <div className="card-controls">
+              <button className="ctrl-btn minus" disabled={sandLayers === 0} onClick={() => removeSubstrate('sand')}>−</button>
+              <span className="ctrl-count">{sandLayers}</span>
+              <button className="ctrl-btn plus" onClick={() => addSubstrate('sand')}>+</button>
+            </div>
+          </div>
         </div>
 
       </div>
