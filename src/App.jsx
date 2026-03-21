@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
+const SNAIL_COLS = 3;
+const SNAIL_ROWS_COUNT = 4;
 const SNAIL_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
+
+const PILLBUG_COLS = 4;
+const PILLBUG_ROWS_COUNT = 4;
+const PILLBUG_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 const PLANT_SHEET_BY_TYPE = {
   moss: '/assets/plants/moss.png',
   fern: '/assets/plants/fern.png',
@@ -262,7 +268,7 @@ export default function App() {
   const [sandLayers, setSandLayers] = useState(0);
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
 
-  const snailSprite = useAsset('/assets/creatures/snail.png');
+  const snailSprite = useAsset('/assets/creatures/snail sprite.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
   const waterSpriteAsset = useAsset('/assets/jar effects/water.png');
   const fogSprite = useAsset('/assets/jar effects/fog.png');
@@ -313,11 +319,11 @@ export default function App() {
     const idle = setInterval(() => {
       setSnails(current => current.map(snail => {
         if (snail.phase === 'dead') return snail;
-        return { ...snail, phase: 'idle', frame: (snail.frame + 1) % 4 };
+        return { ...snail, phase: 'idle', frame: (snail.frame + 1) % SNAIL_COLS };
       }));
       setPillBugs(current => current.map(bug => {
         if (bug.phase === 'dead') return bug;
-        return { ...bug, phase: 'idle', frame: (bug.frame + 1) % 4 };
+        return { ...bug, phase: 'idle', frame: (bug.frame + 1) % PILLBUG_COLS };
       }));
       setWorms(current => current.map(worm => {
         if (worm.phase === 'dead') return worm;
@@ -349,7 +355,7 @@ export default function App() {
         if (phase === 'moving') x += vx * (0.46 + (humidity / 100) * 0.5);
         if (x < 12 || x > 88) { phase = 'turning'; vx = -vx; x = clamp(x, 12, 88); }
         else if (phase === 'turning' && Math.random() < 0.4) phase = 'moving';
-        return { ...snail, x, y, vx, phase, frame: (snail.frame + 1) % (phase === 'dead' ? 1 : 4), vitality };
+        return { ...snail, x, y, vx, phase, frame: (snail.frame + 1) % (phase === 'dead' ? 1 : SNAIL_COLS), vitality };
       }));
 
       setPillBugs(current => current.map(bug => {
@@ -362,7 +368,7 @@ export default function App() {
         else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
         if (phase === 'moving') x += vx * 0.35;
         if (x < 10 || x > 90) { vx = -vx; x = clamp(x, 10, 90); }
-        return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % 4, vitality };
+        return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % PILLBUG_COLS, vitality };
       }));
 
       setSpiders(current => current.map(spider => {
@@ -565,12 +571,20 @@ export default function App() {
                   }} />
                 ))}
 
-                {pillBugs.map(bug => (
-                  <div key={bug.id} className={`creature-sprite pillbug-sprite ${bug.phase === 'dead' ? 'dead' : ''}`} style={{
-                    left: `${bug.x}%`, top: `${bug.y}%`,
-                    transform: `translate(-50%, -50%) scaleX(${bug.vx < 0 ? -1 : 1})`,
-                  }}><div className="pillbug-body" /></div>
-                ))}
+                {pillBugs.map(bug => {
+                  const bugRow = PILLBUG_ROWS[bug.phase] ?? PILLBUG_ROWS.idle;
+                  const bugFrame = bug.phase === 'dead' ? 0 : bug.frame;
+                  const bugCols = bug.phase === 'turning' ? 3 : (bug.phase === 'dead' ? 1 : PILLBUG_COLS);
+                  return (
+                    <div key={bug.id} className={`pillbug-sprite ${bug.phase === 'dead' ? 'dead' : ''}`} style={{
+                      left: `${bug.x}%`, top: `${bug.y}%`,
+                      transform: `translate(-50%, -50%) scaleX(${bug.vx < 0 ? -1 : 1})`,
+                      backgroundImage: "url('/assets/creatures/pillbug.png')",
+                      backgroundSize: `${PILLBUG_COLS * 100}% ${PILLBUG_ROWS_COUNT * 100}%`,
+                      backgroundPosition: `${bugCols > 1 ? (bugFrame / (bugCols - 1)) * 100 : 0}% ${(bugRow / (PILLBUG_ROWS_COUNT - 1)) * 100}%`,
+                    }} />
+                  );
+                })}
 
                 {worms.map(worm => (
                   <div key={worm.id} className={`creature-sprite worm-sprite ${worm.phase === 'dead' ? 'dead' : ''}`} style={{
@@ -601,9 +615,9 @@ export default function App() {
                     <div key={snail.id} className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
                       left: `${snail.x}%`, top: `${snail.y}%`,
                       transform: `translate(-50%, -50%) scaleX(${flip})`,
-                      backgroundImage: "url('/assets/creatures/snail.png')",
-                      backgroundSize: '400% 400%',
-                      backgroundPosition: `${(snail.frame / 3) * 100}% ${(row / 3) * 100}%`,
+                      backgroundImage: "url('/assets/creatures/snail sprite.png')",
+                      backgroundSize: `${SNAIL_COLS * 100}% ${SNAIL_ROWS_COUNT * 100}%`,
+                      backgroundPosition: `${(snail.frame / (SNAIL_COLS - 1)) * 100}% ${(row / (SNAIL_ROWS_COUNT - 1)) * 100}%`,
                     }} />
                   );
                 })}
