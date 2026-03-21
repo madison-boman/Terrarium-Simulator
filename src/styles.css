@@ -275,9 +275,9 @@ body {
 
 .jar {
   position: relative;
-  width: min(52vw, 650px);
+  width: min(70vw, 900px);
   aspect-ratio: 4 / 3;
-  max-height: 72vh;
+  max-height: 85vh;
   overflow: hidden;
 }
 
@@ -717,7 +717,7 @@ body {
   }
 
   .jar {
-    width: min(48vw, 500px);
+    width: min(60vw, 700px);
   }
 }
 
@@ -755,7 +755,7 @@ body {
   }
 
   .jar {
-    width: min(85vw, 500px);
+    width: min(90vw, 600px);
   }
 
   .timeline-bar {
