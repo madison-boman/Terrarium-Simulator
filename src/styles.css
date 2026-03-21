@@ -414,26 +414,10 @@ body {
   bottom: 12%;
   width: 118px;
   aspect-ratio: 704 / 512;
-  height: auto;
   transform-origin: center bottom;
-  overflow: hidden;
   pointer-events: none;
-}
-
-.plant-sheet {
-  display: block;
-  max-width: none;
-  width: 400%;
-  height: 300%;
   image-rendering: pixelated;
-}
-
-.plant-single {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  image-rendering: pixelated;
+  background-repeat: no-repeat;
 }
 
 .plant.moss { width: 120px; bottom: 12%; }
@@ -518,26 +502,10 @@ body {
   position: absolute;
   width: 126px;
   aspect-ratio: 417 / 217;
-  height: auto;
   transform-origin: center;
-  overflow: hidden;
   pointer-events: none;
-}
-
-.snail-sheet {
-  display: block;
-  max-width: none;
-  width: 400%;
-  height: 400%;
   image-rendering: pixelated;
-}
-
-.snail-single {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  image-rendering: pixelated;
+  background-repeat: no-repeat;
 }
 
 .snail-fallback {

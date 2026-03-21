@@ -552,11 +552,10 @@ export default function App() {
                   <div key={plant.id} className={`plant ${plant.type}`} style={{
                     left: `${plant.x}%`,
                     transform: `translateX(-50%) scale(${plant.size})`,
-                  }}>
-                    <img src={PLANT_SHEET_BY_TYPE[plant.type]} alt="" className="plant-sheet" style={{
-                      transform: `translate(${-(plant.frame / 4) * 100}%, ${-(plantHealthRow / 3) * 100}%)`,
-                    }} />
-                  </div>
+                    backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
+                    backgroundSize: '400% 300%',
+                    backgroundPosition: `${(plant.frame / 3) * 100}% ${(plantHealthRow / 2) * 100}%`,
+                  }} />
                 ))}
 
                 {microbes.map(m => (
@@ -602,11 +601,10 @@ export default function App() {
                     <div key={snail.id} className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
                       left: `${snail.x}%`, top: `${snail.y}%`,
                       transform: `translate(-50%, -50%) scaleX(${flip})`,
-                    }}>
-                      <img src="/assets/creatures/snail.png" alt="" className="snail-sheet" style={{
-                        transform: `translate(${-(snail.frame / 4) * 100}%, ${-(row / 4) * 100}%)`,
-                      }} />
-                    </div>
+                      backgroundImage: "url('/assets/creatures/snail.png')",
+                      backgroundSize: '400% 400%',
+                      backgroundPosition: `${(snail.frame / 3) * 100}% ${(row / 3) * 100}%`,
+                    }} />
                   );
                 })}
               </div>
