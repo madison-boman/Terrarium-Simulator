@@ -263,11 +263,9 @@ export default function App() {
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
 
   const snailSprite = useAsset('/assets/creatures/snail.png');
-  const snailSingle = useAsset('/assets/creatures/snail-full.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
   const waterSpriteAsset = useAsset('/assets/jar effects/water.png');
   const fogSprite = useAsset('/assets/jar effects/fog.png');
-  const flowerSingle = useAsset('/assets/plants/flowering-full.png');
 
   const livingSnails = useMemo(() => snails.filter(s => s.phase !== 'dead').length, [snails]);
   const livingPillBugs = useMemo(() => pillBugs.filter(b => b.phase !== 'dead').length, [pillBugs]);
@@ -555,13 +553,9 @@ export default function App() {
                     left: `${plant.x}%`,
                     transform: `translateX(-50%) scale(${plant.size})`,
                   }}>
-                    {plant.type === 'flower' && flowerSingle.ready ? (
-                      <img src="/assets/plants/flowering-full.png" alt="" className="plant-single" />
-                    ) : (
-                      <img src={PLANT_SHEET_BY_TYPE[plant.type]} alt="" className="plant-sheet" style={{
-                        transform: `translate(${-(plant.frame / 4) * 100}%, ${-(plantHealthRow / 3) * 100}%)`,
-                      }} />
-                    )}
+                    <img src={PLANT_SHEET_BY_TYPE[plant.type]} alt="" className="plant-sheet" style={{
+                      transform: `translate(${-(plant.frame / 4) * 100}%, ${-(plantHealthRow / 3) * 100}%)`,
+                    }} />
                   </div>
                 ))}
 
@@ -596,20 +590,12 @@ export default function App() {
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
                   const row = SNAIL_ROWS[snail.phase] ?? SNAIL_ROWS.idle;
-                  if (!snailSprite.ready && !snailSingle.ready) {
+                  if (!snailSprite.ready) {
                     return (
                       <div key={snail.id} className={`snail-fallback ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
                         left: `${snail.x}%`, top: `${snail.y}%`,
                         transform: `translate(-50%, -50%) scaleX(${flip})`,
                       }}>🐌</div>
-                    );
-                  }
-                  if (snailSingle.ready) {
-                    return (
-                      <div key={snail.id} className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
-                        left: `${snail.x}%`, top: `${snail.y}%`,
-                        transform: `translate(-50%, -50%) scaleX(${flip})`,
-                      }}><img src="/assets/creatures/snail-full.png" alt="" className="snail-single" /></div>
                     );
                   }
                   return (
