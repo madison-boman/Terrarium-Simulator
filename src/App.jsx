@@ -39,22 +39,6 @@ function createPillBug(id) {
   };
 }
 
-function createSpider(id) {
-  return {
-    id, kind: 'spider',
-    x: randomRange(20, 80), y: randomRange(22, 55),
-    vx: 0, phase: 'idle', frame: 0, vitality: randomRange(80, 100),
-  };
-}
-
-function createWorm(id) {
-  return {
-    id, kind: 'worm',
-    x: randomRange(20, 80), y: randomRange(76, 90),
-    vx: Math.random() > 0.5 ? 0.4 : -0.4,
-    phase: 'moving', frame: 0, vitality: randomRange(72, 98),
-  };
-}
 
 function createPlant(id, type) {
   return {
@@ -122,36 +106,6 @@ function SnailIcon() {
   );
 }
 
-function SpiderIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <ellipse cx="40" cy="36" rx="10" ry="8" fill="#4A4A4A" stroke="#2A2A2A" strokeWidth="1.5" />
-      <ellipse cx="40" cy="50" rx="13" ry="10" fill="#3A3A3A" stroke="#2A2A2A" strokeWidth="1.5" />
-      <path d="M30 40 Q18 28 8 20" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M30 46 Q14 40 4 38" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M30 52 Q16 56 6 60" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M30 56 Q18 64 10 72" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M50 40 Q62 28 72 20" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M50 46 Q66 40 76 38" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M50 52 Q64 56 74 60" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M50 56 Q62 64 70 72" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <circle cx="36" cy="34" r="3" fill="#C0392B" />
-      <circle cx="44" cy="34" r="3" fill="#C0392B" />
-    </svg>
-  );
-}
-
-function WormIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <path d="M10 50 Q18 32 30 44 Q42 56 52 38 Q60 24 70 34" stroke="#C27888" strokeWidth="7" fill="none" strokeLinecap="round" />
-      <path d="M10 50 Q18 32 30 44 Q42 56 52 38 Q60 24 70 34" stroke="#E0A0B4" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-      <circle cx="70" cy="34" r="5.5" fill="#C27888" stroke="#A05868" strokeWidth="1.5" />
-      <circle cx="67" cy="32" r="2" fill="#3A2020" />
-      <circle cx="73" cy="32" r="2" fill="#3A2020" />
-    </svg>
-  );
-}
 
 function WaterDropIcon() {
   return (
@@ -260,8 +214,6 @@ export default function App() {
 
   const [snails, setSnails] = useState([]);
   const [pillBugs, setPillBugs] = useState([]);
-  const [spiders, setSpiders] = useState([]);
-  const [worms, setWorms] = useState([]);
   const [plants, setPlants] = useState([]);
   const [microbes, setMicrobes] = useState([]);
   const [soilLayers, setSoilLayers] = useState(0);
@@ -275,9 +227,7 @@ export default function App() {
 
   const livingSnails = useMemo(() => snails.filter(s => s.phase !== 'dead').length, [snails]);
   const livingPillBugs = useMemo(() => pillBugs.filter(b => b.phase !== 'dead').length, [pillBugs]);
-  const livingSpiders = useMemo(() => spiders.filter(s => s.phase !== 'dead').length, [spiders]);
-  const livingWorms = useMemo(() => worms.filter(w => w.phase !== 'dead').length, [worms]);
-  const totalCreatures = livingSnails + livingPillBugs + livingSpiders + livingWorms;
+  const totalCreatures = livingSnails + livingPillBugs;
 
   const ecosystemStability = useMemo(() => {
     const humidityFit = 100 - Math.abs(humidity - 68) * 1.6;
@@ -286,7 +236,7 @@ export default function App() {
     const moisturePressure = humidity > 82 ? (humidity - 82) * 2.1 : 0;
     const biodiversity = clamp(
       plants.length * 6 + microbes.length * 0.7 +
-      livingSnails * 7 + livingPillBugs * 5 + livingSpiders * 8 + livingWorms * 6,
+      livingSnails * 7 + livingPillBugs * 5,
       0, 100
     );
     const organismPressure = Math.max(0, totalCreatures * 6 - plants.length * 4);
@@ -298,7 +248,7 @@ export default function App() {
       0, 100
     );
   }, [humidity, lighting, soil, plants.length, microbes.length,
-      livingSnails, livingPillBugs, livingSpiders, livingWorms,
+      livingSnails, livingPillBugs,
       totalCreatures, soilLayers, sandLayers]);
 
   const plantHealthRow = useMemo(() => {
@@ -324,10 +274,6 @@ export default function App() {
       setPillBugs(current => current.map(bug => {
         if (bug.phase === 'dead') return bug;
         return { ...bug, phase: 'idle', frame: (bug.frame + 1) % PILLBUG_COLS };
-      }));
-      setWorms(current => current.map(worm => {
-        if (worm.phase === 'dead') return worm;
-        return { ...worm, frame: (worm.frame + 1) % 4 };
       }));
       setPlants(current => current.map(plant => ({
         ...plant, frame: (plant.frame + 1) % 4,
@@ -371,27 +317,6 @@ export default function App() {
         return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % PILLBUG_COLS, vitality };
       }));
 
-      setSpiders(current => current.map(spider => {
-        if (spider.phase === 'dead') return spider;
-        let { vitality, x, y } = spider;
-        vitality = clamp(vitality - 0.02 + (totalCreatures > 2 ? 0.05 : 0), 0, 100);
-        if (vitality <= 0) return { ...spider, vitality: 0, phase: 'dead' };
-        x = clamp(x + randomRange(-0.3, 0.3), 15, 85);
-        y = clamp(y + randomRange(-0.3, 0.3), 18, 55);
-        return { ...spider, x, y, vitality };
-      }));
-
-      setWorms(current => current.map(worm => {
-        if (worm.phase === 'dead') return worm;
-        let { vx, x, vitality } = worm;
-        const y = clamp(worm.y + randomRange(-0.1, 0.1), 74, 92);
-        vitality = clamp(vitality - (humidity < 35 ? 0.12 : 0) + soil * 0.018 + (sandLayers > 0 ? 0.02 : 0), 0, 100);
-        if (vitality <= 0) return { ...worm, vitality: 0, phase: 'dead' };
-        x += vx * 0.3;
-        if (x < 12 || x > 88) { vx = -vx; x = clamp(x, 12, 88); }
-        return { ...worm, x, y, vx, vitality, frame: (worm.frame + 1) % 4 };
-      }));
-
       setScore(v => {
         const humidityBonus = clamp(24 - Math.abs(humidity - 68), 0, 24);
         const stabilityBonus = ecosystemStability * 0.8;
@@ -404,11 +329,11 @@ export default function App() {
       else setMessage('System stable — keep tuning for a higher score.');
     }, 150);
     return () => clearInterval(timer);
-  }, [running, humidity, soil, ecosystemStability, totalCreatures, sandLayers]);
+  }, [running, humidity, soil, ecosystemStability, totalCreatures]);
 
   const humidityFogOpacity = clamp((humidity - 50) / 70, 0, 0.8);
   const waterFxOpacity = clamp((humidity - 62) / 38, 0, 0.92);
-  const jarOpen = humidity > 72 || running;
+  const jarOpen = !running;
   const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 + sandLayers * 3 : sandLayers * 3;
 
   function addCreature(type) {
@@ -416,8 +341,6 @@ export default function App() {
     switch (type) {
       case 'pillbug': setPillBugs(c => [...c, createPillBug(id)]); break;
       case 'snail':   setSnails(c => [...c, createSnail(id)]); break;
-      case 'spider':  setSpiders(c => [...c, createSpider(id)]); break;
-      case 'worm':    setWorms(c => [...c, createWorm(id)]); break;
     }
   }
 
@@ -443,8 +366,6 @@ export default function App() {
     switch (type) {
       case 'pillbug': setPillBugs(c => c.length ? c.slice(0, -1) : c); break;
       case 'snail':   setSnails(c => c.length ? c.slice(0, -1) : c); break;
-      case 'spider':  setSpiders(c => c.length ? c.slice(0, -1) : c); break;
-      case 'worm':    setWorms(c => c.length ? c.slice(0, -1) : c); break;
     }
   }
 
@@ -482,8 +403,6 @@ export default function App() {
     setSandLayers(0);
     setSnails([]);
     setPillBugs([]);
-    setSpiders([]);
-    setWorms([]);
     setPlants([]);
     setMicrobes([]);
     setMessage('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
@@ -506,8 +425,6 @@ export default function App() {
             {[
               { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length },
               { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length },
-              { type: 'spider', icon: <SpiderIcon />, label: 'Spider', count: spiders.length },
-              { type: 'worm', icon: <WormIcon />, label: 'Worm', count: worms.length },
             ].map(({ type, icon, label, count }) => (
               <div className="item-card" key={type}>
                 {icon}
@@ -579,19 +496,6 @@ export default function App() {
                   );
                 })}
 
-                {worms.map(worm => (
-                  <div key={worm.id} className={`creature-sprite worm-sprite ${worm.phase === 'dead' ? 'dead' : ''}`} style={{
-                    left: `${worm.x}%`, top: `${worm.y}%`,
-                    transform: `translate(-50%, -50%) scaleX(${worm.vx < 0 ? -1 : 1})`,
-                  }}><div className="worm-body" /></div>
-                ))}
-
-                {spiders.map(spider => (
-                  <div key={spider.id} className={`creature-sprite spider-sprite ${spider.phase === 'dead' ? 'dead' : ''}`} style={{
-                    left: `${spider.x}%`, top: `${spider.y}%`,
-                    transform: 'translate(-50%, -50%)',
-                  }}><div className="spider-body" /></div>
-                ))}
 
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
