@@ -319,8 +319,23 @@ button.run {
   aspect-ratio: 704 / 512;
   height: auto;
   transform-origin: center bottom;
-  background-repeat: no-repeat;
-  background-size: 400% 300%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.plant-sheet {
+  display: block;
+  max-width: none;
+  width: 400%;
+  height: 300%;
+  image-rendering: pixelated;
+}
+
+.plant-single {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   image-rendering: pixelated;
 }
 
@@ -335,7 +350,8 @@ button.run {
 }
 
 .plant.flower {
-  width: 116px;
+  width: 92px;
+  aspect-ratio: 408 / 480;
   bottom: 16%;
 }
 
@@ -352,15 +368,26 @@ button.run {
 .snail-fallback {
   position: absolute;
   width: 126px;
-  aspect-ratio: 704 / 384;
+  aspect-ratio: 417 / 217;
   height: auto;
   transform-origin: center;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-.snail-sprite {
-  background-image: url('/assets/creatures/snail.png');
-  background-size: 400% 400%;
-  background-repeat: no-repeat;
+.snail-sheet {
+  display: block;
+  max-width: none;
+  width: 400%;
+  height: 400%;
+  image-rendering: pixelated;
+}
+
+.snail-single {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   image-rendering: pixelated;
 }
 

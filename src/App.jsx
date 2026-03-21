@@ -92,9 +92,11 @@ export default function App() {
   const [message, setMessage] = useState('Build your terrarium, then press Run.');
 
   const snailSprite = useAsset('/assets/creatures/snail.png');
+  const snailSingle = useAsset('/assets/creatures/snail-full.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
   const waterSprite = useAsset('/assets/jar effects/water.png');
   const fogSprite = useAsset('/assets/jar effects/fog.png');
+  const flowerSingle = useAsset('/assets/plants/flowering-full.png');
 
   const livingSnails = useMemo(() => snails.filter((snail) => snail.phase !== 'dead').length, [snails]);
 
@@ -337,7 +339,8 @@ export default function App() {
 
         <p className="asset-note">
           Sprite paths: <code>public/assets/creatures/snail.png</code>, <code>jar/jar.png</code>,{' '}
-          <code>jar effects/water.png</code>
+          <code>jar effects/water.png</code>. Uncropped display sprites: <code>creatures/snail-full.png</code> and{' '}
+          <code>plants/flowering-full.png</code>.
         </p>
       </aside>
 
@@ -372,10 +375,21 @@ export default function App() {
                 style={{
                   left: `${plant.x}%`,
                   transform: `translateX(-50%) scale(${plant.size})`,
-                  backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
-                  backgroundPosition: `${(plant.frame / 3) * 100}% ${(plantHealthRow / 2) * 100}%`,
                 }}
-              />
+              >
+                {plant.type === 'flower' && flowerSingle.ready ? (
+                  <img src="/assets/plants/flowering-full.png" alt="" className="plant-single" />
+                ) : (
+                  <img
+                    src={PLANT_SHEET_BY_TYPE[plant.type]}
+                    alt=""
+                    className="plant-sheet"
+                    style={{
+                      transform: `translate(${-(plant.frame / 4) * 100}%, ${-(plantHealthRow / 3) * 100}%)`,
+                    }}
+                  />
+                )}
+              </div>
             ))}
 
             {microbes.map((microbe) => (
@@ -394,7 +408,7 @@ export default function App() {
               const row = snail.phase === 'dead' ? SNAIL_ROWS.dead : SNAIL_ROWS.moving;
               const flip = snail.vx < 0 ? -1 : 1;
 
-              if (!snailSprite.ready) {
+              if (!snailSprite.ready && !snailSingle.ready) {
                 return (
                   <div
                     key={snail.id}
@@ -410,6 +424,22 @@ export default function App() {
                 );
               }
 
+              if (snailSingle.ready) {
+                return (
+                  <div
+                    key={snail.id}
+                    className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`}
+                    style={{
+                      left: `${snail.x}%`,
+                      top: `${snail.y}%`,
+                      transform: `translate(-50%, -50%) scaleX(${flip})`,
+                    }}
+                  >
+                    <img src="/assets/creatures/snail-full.png" alt="" className="snail-single" />
+                  </div>
+                );
+              }
+
               return (
                 <div
                   key={snail.id}
@@ -417,10 +447,18 @@ export default function App() {
                   style={{
                     left: `${snail.x}%`,
                     top: `${snail.y}%`,
-                    backgroundPosition: `${(snail.frame / 3) * 100}% ${(row / 3) * 100}%`,
                     transform: `translate(-50%, -50%) scaleX(${flip})`,
                   }}
-                />
+                >
+                  <img
+                    src="/assets/creatures/snail.png"
+                    alt=""
+                    className="snail-sheet"
+                    style={{
+                      transform: `translate(${-(snail.frame / 4) * 100}%, ${-(row / 4) * 100}%)`,
+                    }}
+                  />
+                </div>
               );
             })}
           </div>
