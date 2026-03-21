@@ -79,21 +79,22 @@ function useAsset(path) {
   return { ready: status === 'ready', missing: status === 'missing' };
 }
 
-/* ─── SVG Icon Components ─── */
+/* ─── SVG Icons ─── */
 
 function PillBugIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <ellipse cx="32" cy="34" rx="20" ry="13" fill="#9c8468" />
-      <ellipse cx="32" cy="34" rx="20" ry="13" fill="none" stroke="#7a6548" strokeWidth="1.5" />
-      {[24, 29, 35, 40].map(x => (
-        <line key={x} x1={x} y1={22} x2={x} y2={46} stroke="#7a6548" strokeWidth="1.2" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <ellipse cx="40" cy="44" rx="26" ry="16" fill="#8B7355" stroke="#5C4A32" strokeWidth="2" />
+      {[28, 34, 40, 46, 52].map(x => (
+        <line key={x} x1={x} y1={29} x2={x} y2={59} stroke="#5C4A32" strokeWidth="1.5" />
       ))}
-      <circle cx="14" cy="34" r="3" fill="#b09878" />
-      <line x1="14" y1="31" x2="10" y2="24" stroke="#9c8468" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="14" y1="31" x2="8" y2="27" stroke="#9c8468" strokeWidth="1.5" strokeLinecap="round" />
-      {[20, 27, 37, 44].map((x, i) => (
-        <line key={x} x1={x} y1={46} x2={x + (i < 2 ? -3 : 3)} y2={54} stroke="#9c8468" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="16" cy="44" r="5" fill="#A08868" stroke="#5C4A32" strokeWidth="1.5" />
+      <line x1="16" y1="39" x2="10" y2="28" stroke="#7A6548" strokeWidth="2" strokeLinecap="round" />
+      <line x1="16" y1="39" x2="6" y2="32" stroke="#7A6548" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="10" cy="27" r="2" fill="#5C4A32" />
+      <circle cx="6" cy="31" r="2" fill="#5C4A32" />
+      {[22, 30, 38, 50, 56].map((x, i) => (
+        <line key={x} x1={x} y1={59} x2={x + (i < 2 ? -4 : i === 2 ? 0 : 4)} y2={70} stroke="#7A6548" strokeWidth="2" strokeLinecap="round" />
       ))}
     </svg>
   );
@@ -101,134 +102,137 @@ function PillBugIcon() {
 
 function SnailIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <ellipse cx="28" cy="46" rx="20" ry="8" fill="#c4a87a" />
-      <circle cx="38" cy="32" r="14" fill="#d4b88a" stroke="#b09060" strokeWidth="1.5" />
-      <path d="M38 22 C42 24 44 30 38 32 C34 28 36 24 38 22Z" fill="#b09060" opacity="0.5" />
-      <circle cx="38" cy="30" r="5" fill="none" stroke="#b09060" strokeWidth="1" />
-      <path d="M18 42 Q12 36 14 28" stroke="#c4a87a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M18 42 Q10 38 10 30" stroke="#c4a87a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <circle cx="14" cy="27" r="2" fill="#5a4a3a" />
-      <circle cx="10" cy="29" r="2" fill="#5a4a3a" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <ellipse cx="36" cy="58" rx="26" ry="10" fill="#C4A87A" stroke="#8B7355" strokeWidth="2" />
+      <circle cx="50" cy="38" r="18" fill="#DCC8A0" stroke="#8B7355" strokeWidth="2.5" />
+      <path d="M50 24 C56 28 58 36 50 38 C44 34 48 28 50 24Z" fill="#B09060" opacity="0.6" />
+      <circle cx="50" cy="36" r="7" fill="none" stroke="#B09060" strokeWidth="1.5" />
+      <circle cx="50" cy="36" r="3" fill="none" stroke="#B09060" strokeWidth="1" />
+      <path d="M22 52 Q14 44 18 32" stroke="#C4A87A" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path d="M22 52 Q10 48 10 36" stroke="#C4A87A" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <circle cx="18" cy="30" r="3" fill="#5A4A3A" />
+      <circle cx="10" cy="34" r="3" fill="#5A4A3A" />
     </svg>
   );
 }
 
 function SpiderIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <ellipse cx="32" cy="30" rx="8" ry="6" fill="#5a5a5a" />
-      <ellipse cx="32" cy="40" rx="10" ry="8" fill="#484848" />
-      <path d="M24 32 Q14 24 8 18" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M24 36 Q12 32 4 30" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M24 40 Q14 42 6 46" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M24 44 Q16 50 10 56" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M40 32 Q50 24 56 18" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M40 36 Q52 32 60 30" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M40 40 Q50 42 58 46" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <path d="M40 44 Q48 50 54 56" stroke="#5a5a5a" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      <circle cx="28" cy="28" r="2.5" fill="#e74c3c" />
-      <circle cx="36" cy="28" r="2.5" fill="#e74c3c" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <ellipse cx="40" cy="36" rx="10" ry="8" fill="#4A4A4A" stroke="#2A2A2A" strokeWidth="1.5" />
+      <ellipse cx="40" cy="50" rx="13" ry="10" fill="#3A3A3A" stroke="#2A2A2A" strokeWidth="1.5" />
+      <path d="M30 40 Q18 28 8 20" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M30 46 Q14 40 4 38" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M30 52 Q16 56 6 60" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M30 56 Q18 64 10 72" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M50 40 Q62 28 72 20" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M50 46 Q66 40 76 38" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M50 52 Q64 56 74 60" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M50 56 Q62 64 70 72" stroke="#4A4A4A" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <circle cx="36" cy="34" r="3" fill="#C0392B" />
+      <circle cx="44" cy="34" r="3" fill="#C0392B" />
     </svg>
   );
 }
 
 function WormIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <path d="M12 40 Q18 28 26 36 Q34 44 40 32 Q46 22 54 30" stroke="#d4869a" strokeWidth="5" fill="none" strokeLinecap="round" />
-      <path d="M12 40 Q18 28 26 36 Q34 44 40 32 Q46 22 54 30" stroke="#e8a0b4" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <circle cx="54" cy="30" r="4" fill="#d4869a" />
-      <circle cx="52" cy="28" r="1.5" fill="#2a1a1a" />
-      <circle cx="56" cy="28" r="1.5" fill="#2a1a1a" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <path d="M10 50 Q18 32 30 44 Q42 56 52 38 Q60 24 70 34" stroke="#C27888" strokeWidth="7" fill="none" strokeLinecap="round" />
+      <path d="M10 50 Q18 32 30 44 Q42 56 52 38 Q60 24 70 34" stroke="#E0A0B4" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+      <circle cx="70" cy="34" r="5.5" fill="#C27888" stroke="#A05868" strokeWidth="1.5" />
+      <circle cx="67" cy="32" r="2" fill="#3A2020" />
+      <circle cx="73" cy="32" r="2" fill="#3A2020" />
     </svg>
   );
 }
 
 function WaterDropIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
+    <svg viewBox="0 0 80 80" className="item-icon">
       <defs>
-        <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#7ec8e3" />
-          <stop offset="100%" stopColor="#4a90d9" />
+        <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7EC8E3" />
+          <stop offset="100%" stopColor="#3A7BD5" />
         </linearGradient>
       </defs>
-      <path d="M32 8 Q20 28 20 40 Q20 54 32 56 Q44 54 44 40 Q44 28 32 8Z" fill="url(#waterGrad)" />
-      <ellipse cx="28" cy="32" rx="4" ry="6" fill="rgba(255,255,255,0.3)" transform="rotate(-15 28 32)" />
+      <path d="M40 8 Q24 34 24 50 Q24 68 40 72 Q56 68 56 50 Q56 34 40 8Z" fill="url(#wg)" stroke="#2A6090" strokeWidth="2" />
+      <ellipse cx="34" cy="40" rx="5" ry="8" fill="rgba(255,255,255,0.35)" transform="rotate(-12 34 40)" />
     </svg>
   );
 }
 
 function MossIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <ellipse cx="32" cy="52" rx="26" ry="8" fill="#3a6b35" />
-      <ellipse cx="22" cy="46" rx="10" ry="10" fill="#4a8b45" />
-      <ellipse cx="38" cy="44" rx="12" ry="12" fill="#5a9b55" />
-      <ellipse cx="28" cy="40" rx="8" ry="8" fill="#6aab65" />
-      <ellipse cx="42" cy="48" rx="7" ry="7" fill="#4a8b45" />
-      <circle cx="24" cy="42" r="2" fill="#7abb75" opacity="0.7" />
-      <circle cx="36" cy="38" r="2.5" fill="#7abb75" opacity="0.7" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <ellipse cx="40" cy="66" rx="32" ry="10" fill="#3A6B35" stroke="#2A5025" strokeWidth="1.5" />
+      <ellipse cx="26" cy="56" rx="14" ry="14" fill="#4A8B45" />
+      <ellipse cx="48" cy="52" rx="16" ry="16" fill="#5A9B55" />
+      <ellipse cx="34" cy="48" rx="11" ry="11" fill="#6AAB65" />
+      <ellipse cx="54" cy="60" rx="10" ry="9" fill="#4A8B45" />
+      <circle cx="28" cy="50" r="3" fill="#82C87A" opacity="0.6" />
+      <circle cx="44" cy="44" r="3.5" fill="#82C87A" opacity="0.6" />
+      <circle cx="52" cy="54" r="2" fill="#82C87A" opacity="0.5" />
     </svg>
   );
 }
 
 function FernIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <line x1="32" y1="58" x2="32" y2="14" stroke="#3a7a35" strokeWidth="2.5" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <line x1="40" y1="74" x2="40" y2="14" stroke="#3A7A35" strokeWidth="3" />
       {[
-        [32, 20, 18, 16], [32, 20, 46, 16],
-        [32, 28, 14, 22], [32, 28, 50, 22],
-        [32, 36, 16, 30], [32, 36, 48, 30],
-        [32, 44, 20, 38], [32, 44, 44, 38],
+        [40, 22, 18, 14], [40, 22, 62, 14],
+        [40, 32, 14, 24], [40, 32, 66, 24],
+        [40, 42, 16, 34], [40, 42, 64, 34],
+        [40, 52, 20, 44], [40, 52, 60, 44],
+        [40, 60, 26, 54], [40, 60, 54, 54],
       ].map(([x1, y1, x2, y2], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4a9a45" strokeWidth="2" strokeLinecap="round" />
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4A9A45" strokeWidth="2.5" strokeLinecap="round" />
       ))}
-      <ellipse cx="32" cy="12" rx="3" ry="4" fill="#4a9a45" />
+      <ellipse cx="40" cy="12" rx="4" ry="6" fill="#4A9A45" />
     </svg>
   );
 }
 
 function FlowerIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <line x1="32" y1="56" x2="32" y2="30" stroke="#4a8a40" strokeWidth="2.5" />
-      <ellipse cx="24" cy="46" rx="6" ry="3" fill="#5a9a50" transform="rotate(-30 24 46)" />
-      <ellipse cx="40" cy="42" rx="6" ry="3" fill="#5a9a50" transform="rotate(20 40 42)" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <line x1="40" y1="72" x2="40" y2="36" stroke="#4A8A40" strokeWidth="3" />
+      <ellipse cx="28" cy="60" rx="8" ry="4" fill="#5A9A50" transform="rotate(-25 28 60)" />
+      <ellipse cx="52" cy="54" rx="8" ry="4" fill="#5A9A50" transform="rotate(20 52 54)" />
       {[0, 60, 120, 180, 240, 300].map((angle, i) => (
-        <ellipse key={angle} cx="32" cy="18" rx="5" ry="10" fill={i % 2 === 0 ? '#e8658a' : '#d4547a'} transform={`rotate(${angle} 32 24)`} />
+        <ellipse key={angle} cx="40" cy="20" rx="6" ry="13" fill={i % 2 === 0 ? '#E8658A' : '#D4547A'} stroke={i % 2 === 0 ? '#C04868' : '#B03858'} strokeWidth="1" transform={`rotate(${angle} 40 28)`} />
       ))}
-      <circle cx="32" cy="24" r="5" fill="#f4d03f" />
+      <circle cx="40" cy="28" r="7" fill="#F4D03F" stroke="#D4B020" strokeWidth="1.5" />
     </svg>
   );
 }
 
 function SoilIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <path d="M8 40 Q20 24 32 28 Q44 24 56 40 L56 56 L8 56Z" fill="#6b4226" />
-      <path d="M8 40 Q20 24 32 28 Q44 24 56 40" fill="none" stroke="#8b5a36" strokeWidth="2" />
-      <ellipse cx="20" cy="44" rx="3" ry="2" fill="#8b5a36" />
-      <ellipse cx="36" cy="42" rx="2" ry="1.5" fill="#7b4a2e" />
-      <ellipse cx="44" cy="48" rx="2.5" ry="1.5" fill="#8b5a36" />
-      <circle cx="28" cy="50" r="1.5" fill="#9b6a46" />
-      <path d="M24 36 L26 32 L28 36" stroke="#5a8a35" strokeWidth="1.5" fill="none" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <path d="M6 50 Q24 28 40 34 Q56 28 74 50 L74 72 L6 72Z" fill="#6B4226" stroke="#4A2A14" strokeWidth="2" />
+      <ellipse cx="24" cy="56" rx="5" ry="3" fill="#8B5A36" />
+      <ellipse cx="48" cy="52" rx="4" ry="2.5" fill="#7B4A2E" />
+      <ellipse cx="58" cy="62" rx="4" ry="2.5" fill="#8B5A36" />
+      <circle cx="34" cy="64" r="2.5" fill="#9B6A46" />
+      <circle cx="18" cy="66" r="2" fill="#9B6A46" />
+      <path d="M30 44 L33 36 L36 44" stroke="#5A8A35" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <path d="M50 42 L52 36 L54 42" stroke="#5A8A35" strokeWidth="1.5" fill="none" strokeLinecap="round" />
     </svg>
   );
 }
 
 function SandIcon() {
   return (
-    <svg viewBox="0 0 64 64" className="item-icon">
-      <path d="M10 44 Q22 30 32 34 Q42 30 54 44 L54 56 L10 56Z" fill="#e8d5a0" />
-      <path d="M10 44 Q22 30 32 34 Q42 30 54 44" fill="none" stroke="#d4c088" strokeWidth="2" />
-      {[16, 22, 30, 38, 44, 48].map((x, i) => (
-        <circle key={x} cx={x} cy={48 + (i % 3)} r={1 + (i % 2) * 0.5} fill="#c4b078" />
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <path d="M8 52 Q26 34 40 40 Q54 34 72 52 L72 72 L8 72Z" fill="#E8D5A0" stroke="#B0A070" strokeWidth="2" />
+      {[18, 28, 38, 48, 56, 64].map((x, i) => (
+        <circle key={x} cx={x} cy={58 + (i % 3) * 2} r={2 + (i % 2)} fill="#C4B078" />
       ))}
-      {[20, 34, 42].map((x, i) => (
-        <circle key={x} cx={x} cy={52 + (i % 2)} r={0.8} fill="#b8a468" />
+      {[24, 44, 56].map((x, i) => (
+        <circle key={x} cx={x} cy={66 + (i % 2)} r={1.5} fill="#B8A468" />
       ))}
     </svg>
   );
@@ -246,9 +250,7 @@ export default function App() {
   const [waterCycle, setWaterCycle] = useState(52);
 
   const nextId = useRef(300);
-  function getNextId() {
-    return nextId.current++;
-  }
+  function getNextId() { return nextId.current++; }
 
   const [snails, setSnails] = useState(() =>
     Array.from({ length: 2 }, (_, i) => createSnail(i + 1))
@@ -266,7 +268,6 @@ export default function App() {
   );
   const [soilLayers, setSoilLayers] = useState(1);
   const [sandLayers, setSandLayers] = useState(0);
-
   const [message, setMessage] = useState('Build your terrarium, then press Play.');
 
   const snailSprite = useAsset('/assets/creatures/snail.png');
@@ -294,7 +295,6 @@ export default function App() {
     );
     const organismPressure = Math.max(0, totalCreatures * 6 - plants.length * 4);
     const substrateBenefit = clamp(soilLayers * 8 + sandLayers * 5, 0, 20);
-
     return clamp(
       humidityFit * 0.2 + lightFit * 0.16 + soilFit * 0.16 +
       biodiversity * 0.3 + substrateBenefit * 0.08 -
@@ -324,74 +324,61 @@ export default function App() {
     return clamp((day / 365) * 100, 0, 100);
   }, [day]);
 
-  /* ── Simulation loop ── */
+  /* ── Simulation ── */
   useEffect(() => {
     if (!running) return undefined;
-
     const timer = setInterval(() => {
       setDay(v => v + 1);
 
-      setSnails(current =>
-        current.map(snail => {
-          if (snail.phase === 'dead') return snail;
-          let { phase, vx, x, vitality } = snail;
-          const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
-          const dryPenalty = humidity < 28 ? (28 - humidity) * 0.18 : 0;
-          const moldPenalty = humidity > 86 ? (humidity - 86) * 0.12 : 0;
-          vitality = clamp(vitality - dryPenalty - moldPenalty + soil * 0.012, 0, 100);
-          if (vitality <= 0) return { ...snail, vitality: 0, phase: 'dead', frame: 0 };
-          if (Math.random() < 0.03) phase = 'idle';
-          else if (phase === 'idle' && Math.random() < 0.3) phase = 'moving';
-          if (phase === 'moving') x += vx * (0.46 + (humidity / 100) * 0.5);
-          if (x < 12 || x > 88) { phase = 'turning'; vx = -vx; x = clamp(x, 12, 88); }
-          else if (phase === 'turning' && Math.random() < 0.4) phase = 'moving';
-          const frame = (snail.frame + 1) % (phase === 'dead' ? 1 : 4);
-          return { ...snail, x, y, vx, phase, frame, vitality };
-        })
-      );
+      setSnails(current => current.map(snail => {
+        if (snail.phase === 'dead') return snail;
+        let { phase, vx, x, vitality } = snail;
+        const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
+        const dryPenalty = humidity < 28 ? (28 - humidity) * 0.18 : 0;
+        const moldPenalty = humidity > 86 ? (humidity - 86) * 0.12 : 0;
+        vitality = clamp(vitality - dryPenalty - moldPenalty + soil * 0.012, 0, 100);
+        if (vitality <= 0) return { ...snail, vitality: 0, phase: 'dead', frame: 0 };
+        if (Math.random() < 0.03) phase = 'idle';
+        else if (phase === 'idle' && Math.random() < 0.3) phase = 'moving';
+        if (phase === 'moving') x += vx * (0.46 + (humidity / 100) * 0.5);
+        if (x < 12 || x > 88) { phase = 'turning'; vx = -vx; x = clamp(x, 12, 88); }
+        else if (phase === 'turning' && Math.random() < 0.4) phase = 'moving';
+        return { ...snail, x, y, vx, phase, frame: (snail.frame + 1) % (phase === 'dead' ? 1 : 4), vitality };
+      }));
 
-      setPillBugs(current =>
-        current.map(bug => {
-          if (bug.phase === 'dead') return bug;
-          let { phase, vx, x, vitality } = bug;
-          const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 90);
-          vitality = clamp(vitality - (humidity < 30 ? 0.15 : 0) + soil * 0.015, 0, 100);
-          if (vitality <= 0) return { ...bug, vitality: 0, phase: 'dead', frame: 0 };
-          if (Math.random() < 0.05) phase = 'idle';
-          else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
-          if (phase === 'moving') x += vx * 0.35;
-          if (x < 10 || x > 90) { vx = -vx; x = clamp(x, 10, 90); }
-          return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % 4, vitality };
-        })
-      );
+      setPillBugs(current => current.map(bug => {
+        if (bug.phase === 'dead') return bug;
+        let { phase, vx, x, vitality } = bug;
+        const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 90);
+        vitality = clamp(vitality - (humidity < 30 ? 0.15 : 0) + soil * 0.015, 0, 100);
+        if (vitality <= 0) return { ...bug, vitality: 0, phase: 'dead', frame: 0 };
+        if (Math.random() < 0.05) phase = 'idle';
+        else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
+        if (phase === 'moving') x += vx * 0.35;
+        if (x < 10 || x > 90) { vx = -vx; x = clamp(x, 10, 90); }
+        return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % 4, vitality };
+      }));
 
-      setSpiders(current =>
-        current.map(spider => {
-          if (spider.phase === 'dead') return spider;
-          let { vitality, x, y } = spider;
-          vitality = clamp(vitality - 0.02 + (totalCreatures > 2 ? 0.05 : 0), 0, 100);
-          if (vitality <= 0) return { ...spider, vitality: 0, phase: 'dead' };
-          x = clamp(x + randomRange(-0.3, 0.3), 15, 85);
-          y = clamp(y + randomRange(-0.3, 0.3), 18, 55);
-          return { ...spider, x, y, vitality };
-        })
-      );
+      setSpiders(current => current.map(spider => {
+        if (spider.phase === 'dead') return spider;
+        let { vitality, x, y } = spider;
+        vitality = clamp(vitality - 0.02 + (totalCreatures > 2 ? 0.05 : 0), 0, 100);
+        if (vitality <= 0) return { ...spider, vitality: 0, phase: 'dead' };
+        x = clamp(x + randomRange(-0.3, 0.3), 15, 85);
+        y = clamp(y + randomRange(-0.3, 0.3), 18, 55);
+        return { ...spider, x, y, vitality };
+      }));
 
-      setWorms(current =>
-        current.map(worm => {
-          if (worm.phase === 'dead') return worm;
-          let { vx, x, vitality } = worm;
-          const y = clamp(worm.y + randomRange(-0.1, 0.1), 74, 92);
-          vitality = clamp(
-            vitality - (humidity < 35 ? 0.12 : 0) + soil * 0.018 + (sandLayers > 0 ? 0.02 : 0),
-            0, 100
-          );
-          if (vitality <= 0) return { ...worm, vitality: 0, phase: 'dead' };
-          x += vx * 0.3;
-          if (x < 12 || x > 88) { vx = -vx; x = clamp(x, 12, 88); }
-          return { ...worm, x, y, vx, vitality, frame: (worm.frame + 1) % 4 };
-        })
-      );
+      setWorms(current => current.map(worm => {
+        if (worm.phase === 'dead') return worm;
+        let { vx, x, vitality } = worm;
+        const y = clamp(worm.y + randomRange(-0.1, 0.1), 74, 92);
+        vitality = clamp(vitality - (humidity < 35 ? 0.12 : 0) + soil * 0.018 + (sandLayers > 0 ? 0.02 : 0), 0, 100);
+        if (vitality <= 0) return { ...worm, vitality: 0, phase: 'dead' };
+        x += vx * 0.3;
+        if (x < 12 || x > 88) { vx = -vx; x = clamp(x, 12, 88); }
+        return { ...worm, x, y, vx, vitality, frame: (worm.frame + 1) % 4 };
+      }));
 
       setScore(v => {
         const humidityBonus = clamp(24 - Math.abs(humidity - 68), 0, 24);
@@ -404,17 +391,14 @@ export default function App() {
       else if (ecosystemStability > 78) setMessage('Ecosystem thriving — excellent balance!');
       else setMessage('System stable — keep tuning for a higher score.');
     }, 150);
-
     return () => clearInterval(timer);
   }, [running, humidity, soil, ecosystemStability, totalCreatures, sandLayers]);
 
-  /* ── Visual helpers ── */
   const humidityFogOpacity = clamp((humidity - 50) / 70, 0, 0.8);
   const waterFxOpacity = clamp((humidity - 62) / 38, 0, 0.92);
   const jarOpen = humidity > 72 || running;
   const groundHeight = 28 + soilLayers * 4 + sandLayers * 3;
 
-  /* ── Actions ── */
   function addCreature(type) {
     const id = getNextId();
     switch (type) {
@@ -463,79 +447,63 @@ export default function App() {
     nextId.current = 300;
   }
 
+  const survivalLabel = survivalMonths >= 24 ? '2+ Years'
+    : survivalMonths >= 12 ? `${survivalMonths} Months`
+    : `${survivalMonths} Month${survivalMonths !== 1 ? 's' : ''}`;
+
   /* ── Render ── */
   return (
-    <div className="game-shell">
-      {/* ── Header ── */}
-      <header className="game-header">
-        <h1 className="game-title">Terrarium Simulator</h1>
-        <div className="header-stats">
-          <div className="stat">
-            <span className="stat-label">Day</span>
-            <span className="stat-value">{day}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Score</span>
-            <span className="stat-value">{score.toLocaleString()}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Stability</span>
-            <div className="stability-mini">
-              <div className="stability-mini-fill" style={{ width: `${ecosystemStability}%` }} />
-            </div>
-            <span className="stat-value">{ecosystemStability.toFixed(0)}%</span>
-          </div>
-          <button className="reset-btn" onClick={resetWorld}>Reset</button>
-        </div>
-      </header>
+    <div className="game-container">
+      {/* Title */}
+      <h1 className="game-title">Terrarium Simulator Game</h1>
 
-      {/* ── 3-Column Body ── */}
-      <div className="game-body">
-        {/* Left panel */}
-        <aside className="panel creatures-panel">
-          <h2 className="panel-title">Creatures & Elements</h2>
-          <div className="card-grid">
+      {/* Main Row: Left Panel / Jar / Right Panel */}
+      <div className="main-row">
+
+        {/* Left: Creatures & Elements */}
+        <div className="side-panel">
+          <h2 className="panel-heading">Creatures & Elements</h2>
+          <div className="item-grid">
             <button className="item-card" onClick={() => addCreature('pillbug')}>
-              <div className="card-icon-wrap creature-bg"><PillBugIcon /></div>
-              <span className="card-label">Pill Bug</span>
-              {livingPillBugs > 0 && <span className="card-count">{livingPillBugs}</span>}
+              <PillBugIcon />
+              <span className="item-name">Pill Bug</span>
+              {livingPillBugs > 0 && <span className="badge">{livingPillBugs}</span>}
             </button>
             <button className="item-card" onClick={() => addCreature('snail')}>
-              <div className="card-icon-wrap creature-bg"><SnailIcon /></div>
-              <span className="card-label">Snail</span>
-              {livingSnails > 0 && <span className="card-count">{livingSnails}</span>}
+              <SnailIcon />
+              <span className="item-name">Snail</span>
+              {livingSnails > 0 && <span className="badge">{livingSnails}</span>}
             </button>
             <button className="item-card" onClick={() => addCreature('spider')}>
-              <div className="card-icon-wrap creature-bg"><SpiderIcon /></div>
-              <span className="card-label">Spider</span>
-              {livingSpiders > 0 && <span className="card-count">{livingSpiders}</span>}
+              <SpiderIcon />
+              <span className="item-name">Spider</span>
+              {livingSpiders > 0 && <span className="badge">{livingSpiders}</span>}
             </button>
             <button className="item-card" onClick={() => addCreature('worm')}>
-              <div className="card-icon-wrap creature-bg"><WormIcon /></div>
-              <span className="card-label">Worm</span>
-              {livingWorms > 0 && <span className="card-count">{livingWorms}</span>}
-            </button>
-            <button className="item-card wide-card moisture-card" onClick={addMoisture}>
-              <div className="card-icon-wrap water-bg"><WaterDropIcon /></div>
-              <div className="card-text">
-                <span className="card-label">Add Moisture</span>
-                <span className="card-sub">(Water)</span>
-              </div>
+              <WormIcon />
+              <span className="item-name">Worm</span>
+              {livingWorms > 0 && <span className="badge">{livingWorms}</span>}
             </button>
           </div>
-        </aside>
+          <button className="item-card moisture-card" onClick={addMoisture}>
+            <WaterDropIcon />
+            <div className="moisture-text">
+              <span className="item-name">Add Moisture</span>
+              <span className="item-sub">(Water)</span>
+            </div>
+          </button>
+        </div>
 
-        {/* Center viewport */}
-        <main className="jar-viewport">
-          <div className="viewport-label">Glass Jar Simulation View</div>
-          <div className="jar-stage">
+        {/* Center: Glass Jar */}
+        <div className="center-stage">
+          <h2 className="center-heading">Glass Jar Simulation View</h2>
+          <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
               <div className="jar-interior">
                 {sandLayers > 0 && (
                   <div className="sand-layer" style={{ height: `${8 + sandLayers * 3}%` }} />
                 )}
                 <div className="ground" style={{ height: `${groundHeight}%` }} />
-
                 <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
                 {fogSprite.ready && humidity > 52 && (
                   <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
@@ -570,33 +538,26 @@ export default function App() {
                   <div key={bug.id} className={`creature-sprite pillbug-sprite ${bug.phase === 'dead' ? 'dead' : ''}`} style={{
                     left: `${bug.x}%`, top: `${bug.y}%`,
                     transform: `translate(-50%, -50%) scaleX(${bug.vx < 0 ? -1 : 1})`,
-                  }}>
-                    <div className="pillbug-body" />
-                  </div>
+                  }}><div className="pillbug-body" /></div>
                 ))}
 
                 {worms.map(worm => (
                   <div key={worm.id} className={`creature-sprite worm-sprite ${worm.phase === 'dead' ? 'dead' : ''}`} style={{
                     left: `${worm.x}%`, top: `${worm.y}%`,
                     transform: `translate(-50%, -50%) scaleX(${worm.vx < 0 ? -1 : 1})`,
-                  }}>
-                    <div className="worm-body" />
-                  </div>
+                  }}><div className="worm-body" /></div>
                 ))}
 
                 {spiders.map(spider => (
                   <div key={spider.id} className={`creature-sprite spider-sprite ${spider.phase === 'dead' ? 'dead' : ''}`} style={{
                     left: `${spider.x}%`, top: `${spider.y}%`,
                     transform: 'translate(-50%, -50%)',
-                  }}>
-                    <div className="spider-body" />
-                  </div>
+                  }}><div className="spider-body" /></div>
                 ))}
 
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
                   const row = snail.phase === 'dead' ? SNAIL_ROWS.dead : SNAIL_ROWS.moving;
-
                   if (!snailSprite.ready && !snailSingle.ready) {
                     return (
                       <div key={snail.id} className={`snail-fallback ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
@@ -605,18 +566,14 @@ export default function App() {
                       }}>🐌</div>
                     );
                   }
-
                   if (snailSingle.ready) {
                     return (
                       <div key={snail.id} className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
                         left: `${snail.x}%`, top: `${snail.y}%`,
                         transform: `translate(-50%, -50%) scaleX(${flip})`,
-                      }}>
-                        <img src="/assets/creatures/snail-full.png" alt="" className="snail-single" />
-                      </div>
+                      }}><img src="/assets/creatures/snail-full.png" alt="" className="snail-single" /></div>
                     );
                   }
-
                   return (
                     <div key={snail.id} className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
                       left: `${snail.x}%`, top: `${snail.y}%`,
@@ -632,96 +589,76 @@ export default function App() {
               {!jarSprite.ready && <div className="jar-fallback-glass" />}
             </div>
           </div>
-          <p className="status-message">{message}</p>
-        </main>
+        </div>
 
-        {/* Right panel */}
-        <aside className="panel plants-panel">
-          <h2 className="panel-title">Plants & Substrate</h2>
-          <div className="card-grid">
+        {/* Right: Plants & Substrate */}
+        <div className="side-panel">
+          <h2 className="panel-heading">Plants & Substrate</h2>
+          <div className="item-grid">
             <button className="item-card" onClick={() => addPlant('moss')}>
-              <div className="card-icon-wrap plant-bg"><MossIcon /></div>
-              <span className="card-label">Moss</span>
+              <MossIcon />
+              <span className="item-name">Moss</span>
               {plants.filter(p => p.type === 'moss').length > 0 && (
-                <span className="card-count">{plants.filter(p => p.type === 'moss').length}</span>
+                <span className="badge">{plants.filter(p => p.type === 'moss').length}</span>
               )}
             </button>
             <button className="item-card" onClick={() => addPlant('fern')}>
-              <div className="card-icon-wrap plant-bg"><FernIcon /></div>
-              <span className="card-label">Fern</span>
+              <FernIcon />
+              <span className="item-name">Fern</span>
               {plants.filter(p => p.type === 'fern').length > 0 && (
-                <span className="card-count">{plants.filter(p => p.type === 'fern').length}</span>
+                <span className="badge">{plants.filter(p => p.type === 'fern').length}</span>
               )}
             </button>
             <button className="item-card" onClick={() => addPlant('flower')}>
-              <div className="card-icon-wrap plant-bg"><FlowerIcon /></div>
-              <span className="card-label">Flower</span>
+              <FlowerIcon />
+              <span className="item-name">Flower</span>
               {plants.filter(p => p.type === 'flower').length > 0 && (
-                <span className="card-count">{plants.filter(p => p.type === 'flower').length}</span>
+                <span className="badge">{plants.filter(p => p.type === 'flower').length}</span>
               )}
             </button>
             <button className="item-card" onClick={() => addSubstrate('soil')}>
-              <div className="card-icon-wrap substrate-bg"><SoilIcon /></div>
-              <span className="card-label">Soil</span>
-              {soilLayers > 1 && <span className="card-count">{soilLayers}</span>}
-            </button>
-            <button className="item-card wide-card" onClick={() => addSubstrate('sand')}>
-              <div className="card-icon-wrap substrate-bg"><SandIcon /></div>
-              <span className="card-label">Sand</span>
-              {sandLayers > 0 && <span className="card-count">{sandLayers}</span>}
+              <SoilIcon />
+              <span className="item-name">Soil</span>
+              {soilLayers > 1 && <span className="badge">{soilLayers}</span>}
             </button>
           </div>
-        </aside>
+          <button className="item-card sand-card" onClick={() => addSubstrate('sand')}>
+            <SandIcon />
+            <span className="item-name">Sand</span>
+            {sandLayers > 0 && <span className="badge">{sandLayers}</span>}
+          </button>
+        </div>
+
       </div>
 
-      {/* ── Bottom Timeline ── */}
-      <footer className="timeline-bar">
-        <div className="timeline-section">
-          <span className="timeline-title">Simulation Timeline</span>
-          <div className="timeline-track-area">
-            <div className="timeline-markers">
-              <span className={day >= 0 ? 'marker active' : 'marker'}>Day 0</span>
-              <span className={day >= 7 ? 'marker active' : 'marker'}>Week 1</span>
-              <span className={day >= 30 ? 'marker active' : 'marker'}>Month 1</span>
-              <span className={day >= 365 ? 'marker active' : 'marker'}>Year 1</span>
-            </div>
-            <div className="timeline-track">
-              <div className="timeline-fill" style={{ width: `${timelineProgress}%` }} />
-              <div className="timeline-thumb" style={{ left: `${timelineProgress}%` }} />
-            </div>
+      {/* Bottom: Simulation Timeline */}
+      <div className="timeline-bar">
+        <div className="timeline-left">
+          <span className="timeline-label">Simulation Timeline</span>
+        </div>
+        <div className="timeline-center">
+          <div className="timeline-markers">
+            <span className={day >= 0 ? 'tm active' : 'tm'}>Day 0</span>
+            <span className={day >= 7 ? 'tm active' : 'tm'}>Week 1</span>
+            <span className={day >= 30 ? 'tm active' : 'tm'}>Month 1</span>
+            <span className={day >= 365 ? 'tm active' : 'tm'}>Year 1</span>
+          </div>
+          <div className="timeline-track">
+            <div className="timeline-fill" style={{ width: `${timelineProgress}%` }} />
+            <div className="timeline-thumb" style={{ left: `${timelineProgress}%` }} />
           </div>
         </div>
-
-        <div className="timeline-actions">
-          <button
-            className={`play-pause-btn ${running ? 'playing' : ''}`}
-            onClick={() => setRunning(v => !v)}
-          >
-            {running ? (
-              <svg viewBox="0 0 24 24" width="18" height="18">
-                <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
-                <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" width="18" height="18">
-                <polygon points="6,4 20,12 6,20" fill="currentColor" />
-              </svg>
-            )}
-            <span>{running ? 'Pause' : 'Play'}</span>
+        <div className="timeline-right">
+          <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={() => setRunning(v => !v)}>
+            {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
           </button>
-
-          <div className="survival-prediction">
-            <span className="prediction-label">Survival Prediction:</span>
-            <span className="prediction-value">
-              {survivalMonths >= 24
-                ? '2+ Years'
-                : survivalMonths >= 12
-                  ? `${survivalMonths} Months`
-                  : `${survivalMonths} Month${survivalMonths !== 1 ? 's' : ''}`}
-            </span>
+          <button className="reset-btn" onClick={resetWorld}>Reset</button>
+          <div className="survival-box">
+            <span className="surv-label">Survival Prediction:</span>
+            <span className="surv-value">{survivalLabel}</span>
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }
