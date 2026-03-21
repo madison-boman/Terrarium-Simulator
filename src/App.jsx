@@ -309,35 +309,26 @@ export default function App() {
     return clamp((day / 365) * 100, 0, 100);
   }, [day]);
 
-  /* ── Idle animation (runs when simulation is paused) ── */
+  /* ── Idle animation: cycle sprite sheet frames when paused ── */
   useEffect(() => {
     if (running) return undefined;
     const idle = setInterval(() => {
       setSnails(current => current.map(snail => {
         if (snail.phase === 'dead') return snail;
-        const y = clamp(snail.y + randomRange(-0.08, 0.08), 64, 84);
-        const x = clamp(snail.x + randomRange(-0.05, 0.05), 12, 88);
-        return { ...snail, x, y, phase: 'idle', frame: (snail.frame + 1) % 4 };
+        return { ...snail, phase: 'idle', frame: (snail.frame + 1) % 4 };
       }));
       setPillBugs(current => current.map(bug => {
         if (bug.phase === 'dead') return bug;
-        const y = clamp(bug.y + randomRange(-0.06, 0.06), 72, 90);
-        const x = clamp(bug.x + randomRange(-0.04, 0.04), 10, 90);
-        return { ...bug, x, y, phase: 'idle', frame: (bug.frame + 1) % 4 };
-      }));
-      setSpiders(current => current.map(spider => {
-        if (spider.phase === 'dead') return spider;
-        const x = clamp(spider.x + randomRange(-0.1, 0.1), 15, 85);
-        const y = clamp(spider.y + randomRange(-0.1, 0.1), 18, 55);
-        return { ...spider, x, y };
+        return { ...bug, phase: 'idle', frame: (bug.frame + 1) % 4 };
       }));
       setWorms(current => current.map(worm => {
         if (worm.phase === 'dead') return worm;
-        const y = clamp(worm.y + randomRange(-0.05, 0.05), 74, 92);
-        const x = clamp(worm.x + randomRange(-0.06, 0.06), 12, 88);
-        return { ...worm, x, y, frame: (worm.frame + 1) % 4 };
+        return { ...worm, frame: (worm.frame + 1) % 4 };
       }));
-    }, 250);
+      setPlants(current => current.map(plant => ({
+        ...plant, frame: (plant.frame + 1) % 4,
+      })));
+    }, 300);
     return () => clearInterval(idle);
   }, [running]);
 
@@ -604,7 +595,7 @@ export default function App() {
 
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
-                  const row = snail.phase === 'dead' ? SNAIL_ROWS.dead : SNAIL_ROWS.moving;
+                  const row = SNAIL_ROWS[snail.phase] ?? SNAIL_ROWS.idle;
                   if (!snailSprite.ready && !snailSingle.ready) {
                     return (
                       <div key={snail.id} className={`snail-fallback ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
