@@ -7,13 +7,6 @@ const SNAIL_ROWS = {
   dead: 3,
 };
 
-const FRAMES_PER_STATE = {
-  moving: 4,
-  turning: 3,
-  idle: 4,
-  dead: 1,
-};
-
 const PLANT_SHEET_BY_TYPE = {
   moss: '/assets/plants/moss.png',
   fern: '/assets/plants/fern.png',
@@ -32,7 +25,7 @@ function createSnail(id) {
   return {
     id,
     x: randomRange(14, 86),
-    y: randomRange(70, 88),
+    y: randomRange(66, 82),
     vx: Math.random() > 0.5 ? 1 : -1,
     phase: 'moving',
     frame: 0,
@@ -152,7 +145,7 @@ export default function App() {
           let phase = snail.phase;
           let vx = snail.vx;
           let x = snail.x;
-          const y = clamp(snail.y + randomRange(-0.2, 0.2), 67, 90);
+          const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
           let vitality = snail.vitality;
 
           const dryPenalty = humidity < 28 ? (28 - humidity) * 0.18 : 0;
@@ -187,7 +180,7 @@ export default function App() {
             phase = 'moving';
           }
 
-          const frameCount = FRAMES_PER_STATE[phase];
+          const frameCount = phase === 'dead' ? 1 : 4;
           const frame = (snail.frame + 1) % frameCount;
 
           return {
@@ -398,9 +391,7 @@ export default function App() {
             ))}
 
             {snails.map((snail) => {
-              const row = SNAIL_ROWS[snail.phase];
-              const frameX = snail.frame / (4 - 1);
-              const frameY = row / (4 - 1);
+              const row = snail.phase === 'dead' ? SNAIL_ROWS.dead : SNAIL_ROWS.moving;
               const flip = snail.vx < 0 ? -1 : 1;
 
               if (!snailSprite.ready) {
@@ -426,7 +417,7 @@ export default function App() {
                   style={{
                     left: `${snail.x}%`,
                     top: `${snail.y}%`,
-                    backgroundPosition: `${frameX * 100}% ${frameY * 100}%`,
+                    backgroundPosition: `${(snail.frame / 3) * 100}% ${(row / 3) * 100}%`,
                     transform: `translate(-50%, -50%) scaleX(${flip})`,
                   }}
                 />
