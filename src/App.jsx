@@ -14,6 +14,12 @@ const FRAMES_PER_STATE = {
   dead: 1,
 };
 
+const PLANT_SHEET_BY_TYPE = {
+  moss: '/assets/plants/moss.png',
+  fern: '/assets/plants/fern.png',
+  flower: '/assets/plants/flowering.png',
+};
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
@@ -39,7 +45,8 @@ function createPlant(id, type) {
     id,
     type,
     x: randomRange(10, 90),
-    size: randomRange(0.8, 1.35),
+    size: randomRange(0.55, 0.95),
+    frame: Math.floor(randomRange(0, 4)),
   };
 }
 
@@ -91,10 +98,10 @@ export default function App() {
 
   const [message, setMessage] = useState('Build your terrarium, then press Run.');
 
-  const snailSprite = useAsset('/assets/snail-sprite.jpeg');
-  const jarSprite = useAsset('/assets/jar-sprite.jpeg');
-  const waterSprite = useAsset('/assets/water-effects.jpeg');
-  const fogSprite = useAsset('/assets/fog-effects.jpeg');
+  const snailSprite = useAsset('/assets/creatures/snail.png');
+  const jarSprite = useAsset('/assets/jar/jar.png');
+  const waterSprite = useAsset('/assets/jar effects/water.png');
+  const fogSprite = useAsset('/assets/jar effects/fog.png');
 
   const livingSnails = useMemo(() => snails.filter((snail) => snail.phase !== 'dead').length, [snails]);
 
@@ -117,6 +124,16 @@ export default function App() {
       100
     );
   }, [humidity, lighting, soil, plants.length, microbes.length, livingSnails]);
+
+  const plantHealthRow = useMemo(() => {
+    if (ecosystemStability >= 72) {
+      return 0;
+    }
+    if (ecosystemStability >= 42) {
+      return 1;
+    }
+    return 2;
+  }, [ecosystemStability]);
 
   useEffect(() => {
     if (!running) {
@@ -326,8 +343,8 @@ export default function App() {
         </div>
 
         <p className="asset-note">
-          Sprite paths: <code>public/assets/snail-sprite.jpeg</code>, <code>jar-sprite.jpeg</code>,{' '}
-          <code>water-effects.jpeg</code>
+          Sprite paths: <code>public/assets/creatures/snail.png</code>, <code>jar/jar.png</code>,{' '}
+          <code>jar effects/water.png</code>
         </p>
       </aside>
 
@@ -359,7 +376,12 @@ export default function App() {
               <div
                 key={plant.id}
                 className={`plant ${plant.type}`}
-                style={{ left: `${plant.x}%`, transform: `translateX(-50%) scale(${plant.size})` }}
+                style={{
+                  left: `${plant.x}%`,
+                  transform: `translateX(-50%) scale(${plant.size})`,
+                  backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
+                  backgroundPosition: `${(plant.frame / 3) * 100}% ${(plantHealthRow / 2) * 100}%`,
+                }}
               />
             ))}
 

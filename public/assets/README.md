@@ -1,11 +1,14 @@
 # Sprite assets
 
-Place your game art here with these exact names:
+Current runtime asset paths:
 
-- `snail-sprite.jpeg` (4x4 sprite sheet rows: moving, turning, idle, dead)
-- `jar-sprite.jpeg` (2-frame sprite sheet: sealed jar, open jar)
-- `water-effects.jpeg` (water/humidity effect sheet)
-- `fog-effects.jpeg` (humidity haze texture)
+- `creatures/snail.png` (4x4 sprite sheet rows: moving, turning, idle, dead)
+- `jar/jar.png` (2-frame sprite sheet: sealed jar, open jar)
+- `jar effects/water.png` (water/humidity effect sheet)
+- `jar effects/fog.png` (humidity haze effect sheet)
+- `plants/moss.png`
+- `plants/fern.png`
+- `plants/flowering.png`
 
 The React app loads these at runtime and will automatically switch from fallback
 graphics to your provided sprites.

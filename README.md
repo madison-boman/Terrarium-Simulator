@@ -27,14 +27,15 @@ Then open the local Vite URL in your browser.
 
 ## Sprite assets
 
-Drop your sprites into `public/assets` using the exact file names:
+The current game scene uses these transparent PNG sheets:
 
-- `snail-sprite.jpeg`
-- `jar-sprite.jpeg`
-- `water-effects.jpeg`
-- `fog-effects.jpeg`
-
-If assets are missing, the game uses fallback visuals so development can continue.
+- `public/assets/creatures/snail.png`
+- `public/assets/jar/jar.png`
+- `public/assets/jar effects/water.png`
+- `public/assets/jar effects/fog.png`
+- `public/assets/plants/moss.png`
+- `public/assets/plants/fern.png`
+- `public/assets/plants/flowering.png`
 
 ## Controls
 

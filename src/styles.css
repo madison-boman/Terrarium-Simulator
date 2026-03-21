@@ -199,7 +199,7 @@ button.run {
 }
 
 .jar-image {
-  background-image: url('/assets/jar-sprite.jpeg');
+  background-image: url('/assets/jar/jar.png');
   background-size: 200% 100%;
   background-repeat: no-repeat;
   filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.45));
@@ -262,10 +262,13 @@ button.run {
   position: absolute;
   inset: 17% 15% 25%;
   border-radius: 28% 28% 38% 38%;
-  background-image: url('/assets/fog-effects.jpeg');
-  background-size: cover;
+  background-image: url('/assets/jar effects/fog.png');
+  background-size: 800% 100%;
+  background-repeat: no-repeat;
+  background-position: 0% 50%;
   mix-blend-mode: screen;
-  filter: saturate(1.05);
+  filter: saturate(1.05) brightness(1.15);
+  animation: fogSheet 1.2s steps(8) infinite;
   pointer-events: none;
 }
 
@@ -273,11 +276,22 @@ button.run {
   position: absolute;
   inset: 18% 18% 24%;
   border-radius: 30%;
-  background-image: url('/assets/water-effects.jpeg');
+  background-image: url('/assets/jar effects/water.png');
   background-size: 800% 400%;
+  background-repeat: no-repeat;
+  background-position: 0% 66%;
   mix-blend-mode: screen;
   animation: dripSheet 1s steps(8) infinite, dripPulse 1.8s ease-in-out infinite alternate;
   pointer-events: none;
+}
+
+@keyframes fogSheet {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes dripSheet {
@@ -301,28 +315,30 @@ button.run {
 .plant {
   position: absolute;
   bottom: 18%;
-  width: 20px;
-  height: 26px;
+  width: 130px;
+  height: 130px;
   transform-origin: center bottom;
+  background-repeat: no-repeat;
+  background-size: 400% 300%;
+  image-rendering: pixelated;
 }
 
 .plant.moss {
-  border-radius: 50% 45% 20% 20%;
-  background: radial-gradient(circle at 35% 30%, #8efe7f 0%, #3a9442 55%, #275f2a 100%);
+  width: 160px;
+  height: 100px;
+  bottom: 17%;
 }
 
 .plant.fern {
-  width: 18px;
-  height: 34px;
-  border-radius: 45% 45% 15% 15%;
-  background: linear-gradient(180deg, #9ef08f 0%, #3f9f4d 52%, #2f7038 100%);
+  width: 122px;
+  height: 146px;
+  bottom: 16%;
 }
 
 .plant.flower {
-  width: 22px;
-  height: 30px;
-  border-radius: 40% 40% 12% 12%;
-  background: radial-gradient(circle at 50% 26%, #ffd5e7 0%, #f38ebe 45%, #5ea55f 52%, #458345 100%);
+  width: 122px;
+  height: 156px;
+  bottom: 16%;
 }
 
 .microbe {
@@ -337,13 +353,13 @@ button.run {
 .snail-sprite,
 .snail-fallback {
   position: absolute;
-  width: 84px;
-  height: 84px;
+  width: 148px;
+  height: 148px;
   transform-origin: center;
 }
 
 .snail-sprite {
-  background-image: url('/assets/snail-sprite.jpeg');
+  background-image: url('/assets/creatures/snail.png');
   background-size: 400% 400%;
   background-repeat: no-repeat;
   image-rendering: pixelated;
