@@ -24,7 +24,7 @@ function randomRange(min, max) {
 function createSnail(id) {
   return {
     id,
-    x: randomRange(14, 86),
+    x: randomRange(16, 84),
     y: randomRange(66, 82),
     vx: Math.random() > 0.5 ? 1 : -1,
     phase: 'moving',
@@ -37,7 +37,7 @@ function createPlant(id, type) {
   return {
     id,
     type,
-    x: randomRange(10, 90),
+    x: randomRange(18, 82),
     size: randomRange(0.55, 0.95),
     frame: Math.floor(randomRange(0, 4)),
   };
@@ -46,8 +46,8 @@ function createPlant(id, type) {
 function createMicrobe(id) {
   return {
     id,
-    x: randomRange(8, 92),
-    y: randomRange(54, 90),
+    x: randomRange(16, 84),
+    y: randomRange(42, 88),
     scale: randomRange(0.55, 1.35),
   };
 }
@@ -174,10 +174,10 @@ export default function App() {
             x += vx * speed;
           }
 
-          if (x < 7 || x > 93) {
+          if (x < 12 || x > 88) {
             phase = 'turning';
             vx = -vx;
-            x = clamp(x, 7, 93);
+            x = clamp(x, 12, 88);
           } else if (phase === 'turning' && Math.random() < 0.4) {
             phase = 'moving';
           }
@@ -356,75 +356,89 @@ export default function App() {
 
         <div className="jar-stage">
           <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
-            {jarSprite.ready ? <div className="jar-glass" /> : <div className="jar-fallback-glass" />}
+            <div className="jar-interior">
+              <div className="ground" />
+              <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
+              {fogSprite.ready && humidity > 52 ? (
+                <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
+              ) : null}
 
-            <div className="ground" />
-            <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
-            {fogSprite.ready && humidity > 52 ? (
-              <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
-            ) : null}
+              {waterSprite.ready && humidity > 58 ? (
+                <div className="water-overlay" style={{ opacity: waterFxOpacity }} />
+              ) : null}
 
-            {waterSprite.ready && humidity > 58 ? (
-              <div className="water-overlay" style={{ opacity: waterFxOpacity }} />
-            ) : null}
+              {plants.map((plant) => (
+                <div
+                  key={plant.id}
+                  className={`plant ${plant.type}`}
+                  style={{
+                    left: `${plant.x}%`,
+                    transform: `translateX(-50%) scale(${plant.size})`,
+                  }}
+                >
+                  {plant.type === 'flower' && flowerSingle.ready ? (
+                    <img src="/assets/plants/flowering-full.png" alt="" className="plant-single" />
+                  ) : (
+                    <img
+                      src={PLANT_SHEET_BY_TYPE[plant.type]}
+                      alt=""
+                      className="plant-sheet"
+                      style={{
+                        transform: `translate(${-(plant.frame / 4) * 100}%, ${-(plantHealthRow / 3) * 100}%)`,
+                      }}
+                    />
+                  )}
+                </div>
+              ))}
 
-            {plants.map((plant) => (
-              <div
-                key={plant.id}
-                className={`plant ${plant.type}`}
-                style={{
-                  left: `${plant.x}%`,
-                  transform: `translateX(-50%) scale(${plant.size})`,
-                }}
-              >
-                {plant.type === 'flower' && flowerSingle.ready ? (
-                  <img src="/assets/plants/flowering-full.png" alt="" className="plant-single" />
-                ) : (
-                  <img
-                    src={PLANT_SHEET_BY_TYPE[plant.type]}
-                    alt=""
-                    className="plant-sheet"
-                    style={{
-                      transform: `translate(${-(plant.frame / 4) * 100}%, ${-(plantHealthRow / 3) * 100}%)`,
-                    }}
-                  />
-                )}
-              </div>
-            ))}
+              {microbes.map((microbe) => (
+                <div
+                  key={microbe.id}
+                  className="microbe"
+                  style={{
+                    left: `${microbe.x}%`,
+                    top: `${microbe.y}%`,
+                    transform: `translate(-50%, -50%) scale(${microbe.scale})`,
+                  }}
+                />
+              ))}
 
-            {microbes.map((microbe) => (
-              <div
-                key={microbe.id}
-                className="microbe"
-                style={{
-                  left: `${microbe.x}%`,
-                  top: `${microbe.y}%`,
-                  transform: `translate(-50%, -50%) scale(${microbe.scale})`,
-                }}
-              />
-            ))}
+              {snails.map((snail) => {
+                const row = snail.phase === 'dead' ? SNAIL_ROWS.dead : SNAIL_ROWS.moving;
+                const flip = snail.vx < 0 ? -1 : 1;
 
-            {snails.map((snail) => {
-              const row = snail.phase === 'dead' ? SNAIL_ROWS.dead : SNAIL_ROWS.moving;
-              const flip = snail.vx < 0 ? -1 : 1;
+                if (!snailSprite.ready && !snailSingle.ready) {
+                  return (
+                    <div
+                      key={snail.id}
+                      className={`snail-fallback ${snail.phase === 'dead' ? 'dead' : ''}`}
+                      style={{
+                        left: `${snail.x}%`,
+                        top: `${snail.y}%`,
+                        transform: `translate(-50%, -50%) scaleX(${flip})`,
+                      }}
+                    >
+                      🐌
+                    </div>
+                  );
+                }
 
-              if (!snailSprite.ready && !snailSingle.ready) {
-                return (
-                  <div
-                    key={snail.id}
-                    className={`snail-fallback ${snail.phase === 'dead' ? 'dead' : ''}`}
-                    style={{
-                      left: `${snail.x}%`,
-                      top: `${snail.y}%`,
-                      transform: `translate(-50%, -50%) scaleX(${flip})`,
-                    }}
-                  >
-                    🐌
-                  </div>
-                );
-              }
+                if (snailSingle.ready) {
+                  return (
+                    <div
+                      key={snail.id}
+                      className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`}
+                      style={{
+                        left: `${snail.x}%`,
+                        top: `${snail.y}%`,
+                        transform: `translate(-50%, -50%) scaleX(${flip})`,
+                      }}
+                    >
+                      <img src="/assets/creatures/snail-full.png" alt="" className="snail-single" />
+                    </div>
+                  );
+                }
 
-              if (snailSingle.ready) {
                 return (
                   <div
                     key={snail.id}
@@ -435,32 +449,19 @@ export default function App() {
                       transform: `translate(-50%, -50%) scaleX(${flip})`,
                     }}
                   >
-                    <img src="/assets/creatures/snail-full.png" alt="" className="snail-single" />
+                    <img
+                      src="/assets/creatures/snail.png"
+                      alt=""
+                      className="snail-sheet"
+                      style={{
+                        transform: `translate(${-(snail.frame / 4) * 100}%, ${-(row / 4) * 100}%)`,
+                      }}
+                    />
                   </div>
                 );
-              }
-
-              return (
-                <div
-                  key={snail.id}
-                  className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`}
-                  style={{
-                    left: `${snail.x}%`,
-                    top: `${snail.y}%`,
-                    transform: `translate(-50%, -50%) scaleX(${flip})`,
-                  }}
-                >
-                  <img
-                    src="/assets/creatures/snail.png"
-                    alt=""
-                    className="snail-sheet"
-                    style={{
-                      transform: `translate(${-(snail.frame / 4) * 100}%, ${-(row / 4) * 100}%)`,
-                    }}
-                  />
-                </div>
-              );
-            })}
+              })}
+            </div>
+            {jarSprite.ready ? <div className="jar-glass" /> : <div className="jar-fallback-glass" />}
           </div>
         </div>
       </main>

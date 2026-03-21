@@ -198,6 +198,14 @@ button.run {
   overflow: hidden;
 }
 
+.jar-interior {
+  position: absolute;
+  inset: 18% 28% 10%;
+  border-radius: 28% 28% 24% 24%;
+  overflow: hidden;
+  z-index: 1;
+}
+
 .jar-image {
   background-image: url('/assets/jar/jar.png');
   background-size: 200% 100%;
@@ -234,6 +242,7 @@ button.run {
   border-radius: 26%;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.02) 32%, rgba(255, 255, 255, 0.07));
   pointer-events: none;
+  z-index: 2;
 }
 
 .jar-glass {
@@ -242,17 +251,17 @@ button.run {
 
 .ground {
   position: absolute;
-  left: 16%;
-  right: 16%;
-  bottom: 10%;
-  height: 22%;
+  left: 0;
+  right: 0;
+  bottom: -1%;
+  height: 34%;
   border-radius: 42% 42% 28% 28%;
   background: radial-gradient(circle at 50% 10%, #5b3e2d 0%, #3c271d 55%, #281a14 100%);
 }
 
 .humidity-fog {
   position: absolute;
-  inset: 16% 15% 24%;
+  inset: 6% 10% 24%;
   border-radius: 28% 28% 38% 38%;
   background: radial-gradient(circle at 48% 35%, rgba(172, 232, 255, 0.27), rgba(176, 229, 255, 0.1) 45%, transparent 82%);
   pointer-events: none;
@@ -260,7 +269,7 @@ button.run {
 
 .fog-overlay {
   position: absolute;
-  inset: 17% 15% 25%;
+  inset: 9% 10% 26%;
   border-radius: 28% 28% 38% 38%;
   background-image: url('/assets/jar effects/fog.png');
   background-size: 800% 100%;
@@ -274,7 +283,7 @@ button.run {
 
 .water-overlay {
   position: absolute;
-  inset: 18% 18% 24%;
+  inset: 9% 8% 16%;
   border-radius: 30%;
   background-image: url('/assets/jar effects/water.png');
   background-size: 800% 400%;
@@ -314,7 +323,7 @@ button.run {
 
 .plant {
   position: absolute;
-  bottom: 18%;
+  bottom: 12%;
   width: 118px;
   aspect-ratio: 704 / 512;
   height: auto;
@@ -341,18 +350,18 @@ button.run {
 
 .plant.moss {
   width: 120px;
-  bottom: 17%;
+  bottom: 12%;
 }
 
 .plant.fern {
   width: 112px;
-  bottom: 16%;
+  bottom: 11%;
 }
 
 .plant.flower {
   width: 92px;
   aspect-ratio: 408 / 480;
-  bottom: 16%;
+  bottom: 11%;
 }
 
 .microbe {
