@@ -1,0 +1,8 @@
+.sprite-soil {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 1500px;
+     width: 1500px;
+     background-position: -0px -0px;
+ }
+ 
