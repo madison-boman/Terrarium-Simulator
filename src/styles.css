@@ -418,6 +418,12 @@ body {
   transform-origin: center bottom;
   overflow: hidden;
   pointer-events: none;
+  animation: plantSway 3s ease-in-out infinite alternate;
+}
+
+@keyframes plantSway {
+  0% { rotate: -1.5deg; }
+  100% { rotate: 1.5deg; }
 }
 
 .plant-sheet {
@@ -449,6 +455,12 @@ body {
   border-radius: 999px;
   background: rgba(80, 180, 120, 0.7);
   box-shadow: 0 0 6px rgba(60, 160, 100, 0.5);
+  animation: microbeDrift 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes microbeDrift {
+  0% { translate: 0 0; opacity: 0.6; }
+  100% { translate: 2px -3px; opacity: 1; }
 }
 
 /* ── Creature sprites (CSS) ── */
