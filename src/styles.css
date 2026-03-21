@@ -211,8 +211,7 @@ body {
 
 /* Moisture & Sand full-width cards */
 
-.moisture-card,
-.sand-card {
+.moisture-card {
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -223,8 +222,7 @@ body {
   background: var(--bg-card);
 }
 
-.moisture-card .item-icon,
-.sand-card .item-icon {
+.moisture-card .item-icon {
   width: 44px;
   height: 44px;
 }
@@ -348,15 +346,6 @@ body {
   pointer-events: none;
 }
 
-.sand-layer {
-  position: absolute;
-  left: 0; right: 0; bottom: -1%;
-  border-radius: 38% 38% 24% 24%;
-  background: linear-gradient(180deg, #d4ba78 0%, #b8a060 50%, #a08848 100%);
-  image-rendering: pixelated;
-  z-index: 0;
-  transition: height 0.4s ease;
-}
 
 .humidity-fog {
   position: absolute;

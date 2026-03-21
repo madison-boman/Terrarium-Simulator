@@ -184,19 +184,6 @@ function SoilIcon() {
   );
 }
 
-function SandIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <path d="M8 52 Q26 34 40 40 Q54 34 72 52 L72 72 L8 72Z" fill="#E8D5A0" stroke="#B0A070" strokeWidth="2" />
-      {[18, 28, 38, 48, 56, 64].map((x, i) => (
-        <circle key={x} cx={x} cy={58 + (i % 3) * 2} r={2 + (i % 2)} fill="#C4B078" />
-      ))}
-      {[24, 44, 56].map((x, i) => (
-        <circle key={x} cx={x} cy={66 + (i % 2)} r={1.5} fill="#B8A468" />
-      ))}
-    </svg>
-  );
-}
 
 /* ─── Main App ─── */
 
@@ -217,7 +204,6 @@ export default function App() {
   const [plants, setPlants] = useState([]);
   const [microbes, setMicrobes] = useState([]);
   const [soilLayers, setSoilLayers] = useState(0);
-  const [sandLayers, setSandLayers] = useState(0);
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
 
   const snailSprite = useAsset('/assets/creatures/snail sprite.png');
@@ -240,7 +226,7 @@ export default function App() {
       0, 100
     );
     const organismPressure = Math.max(0, totalCreatures * 6 - plants.length * 4);
-    const substrateBenefit = clamp(soilLayers * 8 + sandLayers * 5, 0, 20);
+    const substrateBenefit = clamp(soilLayers * 8, 0, 20);
     return clamp(
       humidityFit * 0.2 + lightFit * 0.16 + soilFit * 0.16 +
       biodiversity * 0.3 + substrateBenefit * 0.08 -
@@ -249,7 +235,7 @@ export default function App() {
     );
   }, [humidity, lighting, soil, plants.length, microbes.length,
       livingSnails, livingPillBugs,
-      totalCreatures, soilLayers, sandLayers]);
+      totalCreatures, soilLayers]);
 
   const plantHealthRow = useMemo(() => {
     if (ecosystemStability >= 72) return 0;
@@ -334,7 +320,7 @@ export default function App() {
   const humidityFogOpacity = clamp((humidity - 50) / 70, 0, 0.8);
   const waterFxOpacity = clamp((humidity - 62) / 38, 0, 0.92);
   const jarOpen = !running;
-  const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 + sandLayers * 3 : sandLayers * 3;
+  const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 : 0;
 
   function addCreature(type) {
     const id = getNextId();
@@ -352,14 +338,9 @@ export default function App() {
     setHumidity(v => clamp(v + 8, 0, 100));
   }
 
-  function addSubstrate(type) {
-    if (type === 'soil') {
-      setSoilLayers(v => Math.min(v + 1, 5));
-      setSoil(v => clamp(v + 6, 0, 100));
-    } else {
-      setSandLayers(v => Math.min(v + 1, 4));
-      setWaterCycle(v => clamp(v + 5, 0, 100));
-    }
+  function addSubstrate() {
+    setSoilLayers(v => Math.min(v + 1, 5));
+    setSoil(v => clamp(v + 6, 0, 100));
   }
 
   function removeCreature(type) {
@@ -381,14 +362,9 @@ export default function App() {
     setHumidity(v => clamp(v - 8, 0, 100));
   }
 
-  function removeSubstrate(type) {
-    if (type === 'soil') {
-      setSoilLayers(v => Math.max(v - 1, 0));
-      setSoil(v => clamp(v - 6, 0, 100));
-    } else {
-      setSandLayers(v => Math.max(v - 1, 0));
-      setWaterCycle(v => clamp(v - 5, 0, 100));
-    }
+  function removeSubstrate() {
+    setSoilLayers(v => Math.max(v - 1, 0));
+    setSoil(v => clamp(v - 6, 0, 100));
   }
 
   function resetWorld() {
@@ -400,7 +376,6 @@ export default function App() {
     setSoil(56);
     setWaterCycle(52);
     setSoilLayers(0);
-    setSandLayers(0);
     setSnails([]);
     setPillBugs([]);
     setPlants([]);
@@ -538,21 +513,12 @@ export default function App() {
                 {icon}
                 <span className="item-name">{label}</span>
                 <div className="card-controls">
-                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => type === 'soil' ? removeSubstrate('soil') : removePlant(type)}>−</button>
+                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => type === 'soil' ? removeSubstrate() : removePlant(type)}>−</button>
                   <span className="ctrl-count">{count}</span>
-                  <button className="ctrl-btn plus" onClick={() => type === 'soil' ? addSubstrate('soil') : addPlant(type)}>+</button>
+                  <button className="ctrl-btn plus" onClick={() => type === 'soil' ? addSubstrate() : addPlant(type)}>+</button>
                 </div>
               </div>
             ))}
-          </div>
-          <div className="item-card sand-card">
-            <SandIcon />
-            <span className="item-name">Sand</span>
-            <div className="card-controls">
-              <button className="ctrl-btn minus" disabled={sandLayers === 0} onClick={() => removeSubstrate('sand')}>−</button>
-              <span className="ctrl-count">{sandLayers}</span>
-              <button className="ctrl-btn plus" onClick={() => addSubstrate('sand')}>+</button>
-            </div>
           </div>
         </div>
 
