@@ -275,9 +275,10 @@ body {
 
 .jar {
   position: relative;
-  width: min(55vh, 500px);
+  width: auto;
+  height: 100%;
   aspect-ratio: 1 / 1;
-  max-height: 80vh;
+  max-width: 100%;
   overflow: hidden;
 }
 
@@ -338,18 +339,20 @@ body {
 
 /* ── Jar Layers ── */
 
-.ground {
+.soil-overlay {
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  background: url('/assets/jar/soil.png') center bottom / 100% 100% no-repeat;
+  inset: 0;
+  background: url('/assets/jar/soil.png') center / 100% 100% no-repeat;
   image-rendering: pixelated;
-  transition: height 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .sand-layer {
   position: absolute;
   left: 0; right: 0; bottom: -1%;
-  background: url('/nutrients/sand.png') center bottom / 100% auto no-repeat;
+  border-radius: 38% 38% 24% 24%;
+  background: linear-gradient(180deg, #d4ba78 0%, #b8a060 50%, #a08848 100%);
   image-rendering: pixelated;
   z-index: 0;
   transition: height 0.4s ease;
@@ -677,9 +680,6 @@ body {
     padding: 0.4rem;
   }
 
-  .jar {
-    width: min(50vh, 450px);
-  }
 }
 
 @media (max-width: 780px) {
@@ -716,7 +716,9 @@ body {
   }
 
   .jar {
-    width: min(80vw, 400px);
+    height: auto;
+    width: 90vw;
+    max-width: 500px;
   }
 
   .timeline-bar {

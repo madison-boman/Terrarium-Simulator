@@ -539,13 +539,8 @@ export default function App() {
           <h2 className="center-heading">Glass Jar Simulation View</h2>
           <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
+              {soilLayers > 0 && <div className="soil-overlay" />}
               <div className="jar-interior">
-                {sandLayers > 0 && (
-                  <div className="sand-layer" style={{ height: `${8 + sandLayers * 3}%` }} />
-                )}
-                {soilLayers > 0 && (
-                  <div className="ground" style={{ height: `${groundHeight}%` }} />
-                )}
                 <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
                 {fogSprite.ready && humidity > 52 && (
                   <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
