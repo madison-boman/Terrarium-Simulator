@@ -4,7 +4,7 @@ const SNAIL_COLS = 3;
 const SNAIL_ROWS_COUNT = 4;
 const SNAIL_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 
-const PILLBUG_COLS = 4;
+const PILLBUG_COLS = 3;
 const PILLBUG_ROWS_COUNT = 4;
 const PILLBUG_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 const PLANT_SHEET_BY_TYPE = {
@@ -573,15 +573,13 @@ export default function App() {
 
                 {pillBugs.map(bug => {
                   const bugRow = PILLBUG_ROWS[bug.phase] ?? PILLBUG_ROWS.idle;
-                  const bugFrame = bug.phase === 'dead' ? 0 : bug.frame;
-                  const bugCols = bug.phase === 'turning' ? 3 : (bug.phase === 'dead' ? 1 : PILLBUG_COLS);
                   return (
                     <div key={bug.id} className={`pillbug-sprite ${bug.phase === 'dead' ? 'dead' : ''}`} style={{
                       left: `${bug.x}%`, top: `${bug.y}%`,
                       transform: `translate(-50%, -50%) scaleX(${bug.vx < 0 ? -1 : 1})`,
                       backgroundImage: "url('/assets/creatures/pillbug.png')",
                       backgroundSize: `${PILLBUG_COLS * 100}% ${PILLBUG_ROWS_COUNT * 100}%`,
-                      backgroundPosition: `${bugCols > 1 ? (bugFrame / (bugCols - 1)) * 100 : 0}% ${(bugRow / (PILLBUG_ROWS_COUNT - 1)) * 100}%`,
+                      backgroundPosition: `${(bug.frame / (PILLBUG_COLS - 1)) * 100}% ${(bugRow / (PILLBUG_ROWS_COUNT - 1)) * 100}%`,
                     }} />
                   );
                 })}

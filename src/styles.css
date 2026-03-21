@@ -275,61 +275,62 @@ body {
 
 .jar {
   position: relative;
-  width: min(70vw, 900px);
-  aspect-ratio: 4 / 3;
-  max-height: 85vh;
+  width: min(55vh, 500px);
+  aspect-ratio: 1 / 1;
+  max-height: 80vh;
   overflow: hidden;
 }
 
 .jar-interior {
   position: absolute;
-  inset: 18% 28% 10%;
-  border-radius: 28% 28% 24% 24%;
+  inset: 14% 18% 8% 18%;
+  border-radius: 10% 10% 16% 16%;
   overflow: hidden;
   z-index: 1;
 }
 
 .jar-image {
   background-image: url('/assets/jar/jar.png');
-  background-size: 200% 100%;
+  background-size: 100% 200%;
   background-repeat: no-repeat;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+  image-rendering: pixelated;
 }
 
-.jar-image.sealed { background-position: 0% 0; }
-.jar-image.open { background-position: 100% 0; }
+.jar-image.open { background-position: 0% 0%; }
+.jar-image.sealed { background-position: 0% 100%; }
 
 .jar-fallback {
-  border-radius: 46% 46% 34% 34%;
-  border: 4px solid #8aaa9a;
+  border-radius: 12% 12% 16% 16%;
+  border: 4px solid rgba(140, 180, 200, 0.45);
   background: linear-gradient(
     180deg,
-    rgba(200, 230, 220, 0.35),
-    rgba(160, 200, 190, 0.2) 50%,
-    rgba(140, 180, 170, 0.25)
+    rgba(180, 210, 230, 0.15),
+    rgba(160, 190, 210, 0.1) 50%,
+    rgba(140, 170, 190, 0.15)
   );
   box-shadow:
-    inset 0 0 40px rgba(200, 230, 220, 0.15),
-    0 8px 24px rgba(0, 0, 0, 0.12);
+    inset 0 0 40px rgba(180, 210, 230, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .jar-fallback::before {
   content: '';
   position: absolute;
   inset: 6% 8%;
-  border-radius: 40%;
-  border: 2px solid rgba(180, 220, 210, 0.3);
+  border-radius: 10%;
+  border: 2px solid rgba(200, 225, 240, 0.2);
 }
 
 .jar-fallback-glass {
   position: absolute;
   inset: 8% 14%;
-  border-radius: 26%;
+  border-radius: 10%;
   background: linear-gradient(
     115deg,
-    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.15),
     rgba(255, 255, 255, 0.02) 35%,
-    rgba(255, 255, 255, 0.1) 80%
+    rgba(255, 255, 255, 0.08) 80%
   );
   pointer-events: none;
   z-index: 2;
@@ -339,8 +340,8 @@ body {
 
 .ground {
   position: absolute;
-  left: 0; right: 0; bottom: -1%;
-  background: url('/nutrients/soil.png') center bottom / 100% auto no-repeat;
+  left: 0; right: 0; bottom: 0;
+  background: url('/assets/jar/soil.png') center bottom / 100% 100% no-repeat;
   image-rendering: pixelated;
   transition: height 0.4s ease;
 }
@@ -448,8 +449,8 @@ body {
 
 .pillbug-sprite {
   position: absolute;
-  width: 90px;
-  aspect-ratio: 704 / 384;
+  width: 80px;
+  height: 80px;
   pointer-events: none;
   image-rendering: pixelated;
   background-repeat: no-repeat;
@@ -677,7 +678,7 @@ body {
   }
 
   .jar {
-    width: min(60vw, 700px);
+    width: min(50vh, 450px);
   }
 }
 
@@ -715,7 +716,7 @@ body {
   }
 
   .jar {
-    width: min(90vw, 600px);
+    width: min(80vw, 400px);
   }
 
   .timeline-bar {
