@@ -91,9 +91,10 @@ export default function App() {
 
   const [message, setMessage] = useState('Build your terrarium, then press Run.');
 
-  const snailSprite = useAsset('/assets/snail-sprite.png');
-  const jarSprite = useAsset('/assets/jar-sprite.png');
-  const waterSprite = useAsset('/assets/water-effects.png');
+  const snailSprite = useAsset('/assets/snail-sprite.jpeg');
+  const jarSprite = useAsset('/assets/jar-sprite.jpeg');
+  const waterSprite = useAsset('/assets/water-effects.jpeg');
+  const fogSprite = useAsset('/assets/fog-effects.jpeg');
 
   const livingSnails = useMemo(() => snails.filter((snail) => snail.phase !== 'dead').length, [snails]);
 
@@ -325,8 +326,8 @@ export default function App() {
         </div>
 
         <p className="asset-note">
-          Sprite paths: <code>public/assets/snail-sprite.png</code>, <code>jar-sprite.png</code>,{' '}
-          <code>water-effects.png</code>
+          Sprite paths: <code>public/assets/snail-sprite.jpeg</code>, <code>jar-sprite.jpeg</code>,{' '}
+          <code>water-effects.jpeg</code>
         </p>
       </aside>
 
@@ -346,6 +347,9 @@ export default function App() {
 
             <div className="ground" />
             <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
+            {fogSprite.ready && humidity > 52 ? (
+              <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
+            ) : null}
 
             {waterSprite.ready && humidity > 58 ? (
               <div className="water-overlay" style={{ opacity: waterFxOpacity }} />

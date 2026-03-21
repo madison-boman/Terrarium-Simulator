@@ -29,9 +29,10 @@ Then open the local Vite URL in your browser.
 
 Drop your sprites into `public/assets` using the exact file names:
 
-- `snail-sprite.png`
-- `jar-sprite.png`
-- `water-effects.png`
+- `snail-sprite.jpeg`
+- `jar-sprite.jpeg`
+- `water-effects.jpeg`
+- `fog-effects.jpeg`
 
 If assets are missing, the game uses fallback visuals so development can continue.
 
