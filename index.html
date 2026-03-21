@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terrarium Simulator</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>Terrarium Simulator</h1>
+      <p>
+        Design a balanced miniature ecosystem and run accelerated time to see how
+        long your terrarium survives.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel builder-panel">
+        <h2>Build Your Ecosystem</h2>
+
+        <form id="builder-form">
+          <fieldset>
+            <legend>Organisms</legend>
+            <label for="insects">Insects</label>
+            <input id="insects" name="insects" type="range" min="0" max="50" value="16" />
+            <output for="insects" id="insects-output">16</output>
+
+            <label for="snails">Snails</label>
+            <input id="snails" name="snails" type="range" min="0" max="30" value="7" />
+            <output for="snails" id="snails-output">7</output>
+
+            <label for="microbes">Microbes</label>
+            <input id="microbes" name="microbes" type="range" min="0" max="80" value="22" />
+            <output for="microbes" id="microbes-output">22</output>
+          </fieldset>
+
+          <fieldset>
+            <legend>Plants</legend>
+            <label for="moss">Moss</label>
+            <input id="moss" name="moss" type="range" min="0" max="60" value="20" />
+            <output for="moss" id="moss-output">20</output>
+
+            <label for="ferns">Ferns</label>
+            <input id="ferns" name="ferns" type="range" min="0" max="40" value="14" />
+            <output for="ferns" id="ferns-output">14</output>
+
+            <label for="flowers">Flowering Plants</label>
+            <input id="flowers" name="flowers" type="range" min="0" max="25" value="8" />
+            <output for="flowers" id="flowers-output">8</output>
+          </fieldset>
+
+          <fieldset>
+            <legend>Environmental Settings</legend>
+            <label for="light">Lighting (%)</label>
+            <input id="light" name="light" type="range" min="0" max="100" value="63" />
+            <output for="light" id="light-output">63</output>
+
+            <label for="humidity">Humidity (%)</label>
+            <input id="humidity" name="humidity" type="range" min="0" max="100" value="68" />
+            <output for="humidity" id="humidity-output">68</output>
+
+            <label for="soil">Soil Composition/Fertility (%)</label>
+            <input id="soil" name="soil" type="range" min="0" max="100" value="58" />
+            <output for="soil" id="soil-output">58</output>
+
+            <label for="water">Water Cycle Intensity (%)</label>
+            <input id="water" name="water" type="range" min="0" max="100" value="61" />
+            <output for="water" id="water-output">61</output>
+          </fieldset>
+        </form>
+
+        <div class="button-row">
+          <button id="run-button" type="button" class="primary">Run Simulation</button>
+          <button id="pause-button" type="button">Pause</button>
+          <button id="reset-button" type="button">Reset</button>
+        </div>
+      </section>
+
+      <section class="panel simulation-panel">
+        <h2>Simulation Dashboard</h2>
+
+        <div id="terrarium-visual" class="terrarium-visual" aria-live="polite"></div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <h3>Day</h3>
+            <p id="day-value">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Health</h3>
+            <p id="health-value">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Balance</h3>
+            <p id="balance-value">0</p>
+          </article>
+          <article class="stat-card">
+            <h3>Score</h3>
+            <p id="score-value">0</p>
+          </article>
+        </div>
+
+        <div class="meter-row">
+          <div>
+            <h4>Plant Biomass</h4>
+            <progress id="plants-meter" value="0" max="100"></progress>
+          </div>
+          <div>
+            <h4>Organism Pressure</h4>
+            <progress id="pressure-meter" value="0" max="100"></progress>
+          </div>
+          <div>
+            <h4>Mold Overgrowth</h4>
+            <progress id="mold-meter" value="0" max="100"></progress>
+          </div>
+        </div>
+
+        <div class="timeline-wrap">
+          <h3>Timeline Events</h3>
+          <ul id="timeline"></ul>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
