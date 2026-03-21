@@ -461,7 +461,7 @@ export default function App() {
                 );
               })}
             </div>
-            {jarSprite.ready ? <div className="jar-glass" /> : <div className="jar-fallback-glass" />}
+            {!jarSprite.ready ? <div className="jar-fallback-glass" /> : null}
           </div>
         </div>
       </main>
