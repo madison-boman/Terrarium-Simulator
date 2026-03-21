@@ -1,42 +1,48 @@
-# Terrarium Simulator
+# Terrarium Simulator (React)
 
-A browser-based digital terrarium game where players tune organisms, plants, and
-environmental conditions, then run accelerated ecosystem simulation to maximize
-survival and score.
+A game-style browser terrarium focused on one large jar scene, with side controls
+for adding ecosystem elements and tuning conditions.
 
-## Features
+## What changed
 
-- Adjustable ecosystem setup:
-  - Organisms: insects, snails, microbes
-  - Plants: moss, ferns, flowering plants
-  - Environment: lighting, humidity, soil composition, water cycle
-- Fast-forward simulation loop with nonlinear ecosystem interactions
-- Live dashboard:
-  - Day counter
-  - Health, balance, and score
-  - Plant biomass, organism pressure, mold overgrowth meters
-- Timeline feed showing random ecological events and stability warnings
-- Win/lose outcomes based on collapse conditions or full-year survival
+- Migrated the app to **React + Vite**
+- Shifted from chart-heavy dashboard to a **video game style scene**
+- Added a large animated jar view with:
+  - sprite-based snails
+  - plants and microbes placed inside the jar
+  - humidity fog and optional water effects overlay
+- Added side-panel gameplay controls:
+  - add snails/plants/microbes
+  - tune humidity, lighting, soil quality, and water cycle
+  - run/pause/reset simulation
 
-## How to Run
+## Setup
 
-This project is dependency-free and runs directly in the browser.
+```bash
+npm install
+npm run dev
+```
 
-1. Open `index.html` in a browser.
-2. Adjust sliders in the builder panel.
-3. Click **Run Simulation**.
-4. Use **Pause** or **Reset** as needed.
+Then open the local Vite URL in your browser.
 
-## Simulation Logic (High Level)
+## Sprite assets
 
-- Plants grow based on fit between current and ideal light/humidity/soil/water.
-- Organisms consume plant resources and are affected by crowding and mold.
-- Microbes improve nutrient recycling but can contribute to pressure if overgrown.
-- Mold increases with persistent high moisture and detritus.
-- Balance and health are recomputed each day and used to drive score and collapse.
+Drop your sprites into `public/assets` using the exact file names:
+
+- `snail-sprite.png`
+- `jar-sprite.png`
+- `water-effects.png`
+
+If assets are missing, the game uses fallback visuals so development can continue.
+
+## Controls
+
+- **Add to Jar**: add snails, moss, ferns, flowers, and microbes
+- **Environment sliders**: humidity, lighting, soil quality, water cycle
+- **Run/Pause/Reset**: control simulation time
 
 ## Tech Stack
 
-- HTML
+- React
+- Vite
 - CSS
-- Vanilla JavaScript
