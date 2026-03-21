@@ -1,0 +1,22 @@
+.sprite-1 copy {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 1500px;
+     width: 1500px;
+     background-position: -0px -0px;
+ }
+ .sprite-2 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 1500px;
+     width: 1500px;
+     background-position: -0px -1500px;
+ }
+ .sprite-3 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 1500px;
+     width: 1500px;
+     background-position: -0px -3000px;
+ }
+ 
