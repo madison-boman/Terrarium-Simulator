@@ -682,34 +682,6 @@ body {
   color: var(--text-dark);
 }
 
-/* ── Survival Box ── */
-
-.survival-box {
-  border: 2px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-card);
-  padding: 0.3rem 0.6rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  white-space: nowrap;
-}
-
-.surv-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--text-medium);
-  letter-spacing: 0.04em;
-}
-
-.surv-value {
-  font-family: 'Patrick Hand', cursive;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--green-dark);
-}
 
 /* ─── Responsive ─── */
 

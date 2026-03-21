@@ -311,13 +311,6 @@ export default function App() {
     return 2;
   }, [ecosystemStability]);
 
-  const survivalMonths = useMemo(() => {
-    if (ecosystemStability >= 95) return 24;
-    if (ecosystemStability >= 80) return Math.round(12 + (ecosystemStability - 80) * 0.8);
-    if (ecosystemStability >= 50) return Math.round(4 + (ecosystemStability - 50) * 0.27);
-    if (ecosystemStability >= 20) return Math.round(1 + (ecosystemStability - 20) * 0.1);
-    return 0;
-  }, [ecosystemStability]);
 
   const timelineProgress = useMemo(() => {
     if (day >= 365) return 100;
@@ -446,10 +439,6 @@ export default function App() {
     setMessage('Terrarium reset. Build your ecosystem!');
     nextId.current = 300;
   }
-
-  const survivalLabel = survivalMonths >= 24 ? '2+ Years'
-    : survivalMonths >= 12 ? `${survivalMonths} Months`
-    : `${survivalMonths} Month${survivalMonths !== 1 ? 's' : ''}`;
 
   /* ── Render ── */
   return (
@@ -653,10 +642,6 @@ export default function App() {
             {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
           </button>
           <button className="reset-btn" onClick={resetWorld}>Reset</button>
-          <div className="survival-box">
-            <span className="surv-label">Survival Prediction:</span>
-            <span className="surv-value">{survivalLabel}</span>
-          </div>
         </div>
       </div>
     </div>
