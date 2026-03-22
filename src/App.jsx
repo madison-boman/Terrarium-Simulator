@@ -62,6 +62,7 @@ function createPlant(id, type) {
     x: randomRange(18, 82),
     size: randomRange(0.55, 0.95),
     frame: Math.floor(randomRange(0, PLANT_COLS)),
+    health: 0,
   };
 }
 
@@ -297,11 +298,6 @@ export default function App() {
       livingSnails, livingPillBugs, livingAnts,
       totalCreatures, soilLayers]);
 
-  const plantHealthRow = useMemo(() => {
-    if (ecosystemStability >= 72) return 0;
-    if (ecosystemStability >= 42) return 1;
-    return 2;
-  }, [ecosystemStability]);
 
   const longevity = useMemo(
     () =>
@@ -425,6 +421,20 @@ export default function App() {
         if (x < 8 || x > 92) { phase = 'turning'; vx = -vx; x = clamp(x, 8, 92); }
         else if (phase === 'turning' && Math.random() < 0.5) phase = 'moving';
         return { ...ant, x, y, vx, phase, frame: (ant.frame + 1) % ANT_COLS, vitality };
+      }));
+
+      setPlants(current => current.map(plant => {
+        let targetHealth;
+        if (ecosystemStability >= 72) targetHealth = 0;
+        else if (ecosystemStability >= 42) targetHealth = 1;
+        else targetHealth = 2;
+        if (plant.health < targetHealth && Math.random() < 0.08) {
+          return { ...plant, health: plant.health + 1 };
+        }
+        if (plant.health > targetHealth && Math.random() < 0.04) {
+          return { ...plant, health: plant.health - 1 };
+        }
+        return plant;
       }));
 
       setScore(v => {
@@ -633,7 +643,7 @@ export default function App() {
                     transform: `translateX(-50%) scale(${plant.size})`,
                     backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
                     backgroundSize: `${PLANT_COLS * 100}% ${PLANT_ROWS * 100}%`,
-                    backgroundPosition: `${(plant.frame / (PLANT_COLS - 1)) * 100}% ${(plantHealthRow / (PLANT_ROWS - 1)) * 100}%`,
+                    backgroundPosition: `${(plant.frame / (PLANT_COLS - 1)) * 100}% ${(plant.health / (PLANT_ROWS - 1)) * 100}%`,
                   }} />
                 ))}
 
