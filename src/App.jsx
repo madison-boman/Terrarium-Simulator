@@ -13,6 +13,8 @@ const PLANT_ROWS = 3;
 const PLANT_SHEET_BY_TYPE = {
   moss: '/assets/plants/moss.png',
   fern: '/assets/plants/fern.png',
+  flower: '/assets/plants/flowering.png',
+  tallplant: '/assets/plants/tall plant.png',
 };
 
 function clamp(v, min, max) {
@@ -180,6 +182,20 @@ function FlowerIcon() {
         <ellipse key={angle} cx="40" cy="20" rx="6" ry="13" fill={i % 2 === 0 ? '#E8658A' : '#D4547A'} stroke={i % 2 === 0 ? '#C04868' : '#B03858'} strokeWidth="1" transform={`rotate(${angle} 40 28)`} />
       ))}
       <circle cx="40" cy="28" r="7" fill="#F4D03F" stroke="#D4B020" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function TallPlantIcon() {
+  return (
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <line x1="40" y1="76" x2="40" y2="8" stroke="#3A7A35" strokeWidth="3" />
+      <ellipse cx="30" cy="64" rx="10" ry="4" fill="#4A9A45" transform="rotate(-15 30 64)" />
+      <ellipse cx="50" cy="56" rx="10" ry="4" fill="#5AAA55" transform="rotate(15 50 56)" />
+      <ellipse cx="28" cy="44" rx="12" ry="5" fill="#4A9A45" transform="rotate(-20 28 44)" />
+      <ellipse cx="52" cy="34" rx="12" ry="5" fill="#5AAA55" transform="rotate(18 52 34)" />
+      <ellipse cx="32" cy="22" rx="10" ry="4.5" fill="#4A9A45" transform="rotate(-15 32 22)" />
+      <ellipse cx="40" cy="10" rx="6" ry="8" fill="#5AAA55" />
     </svg>
   );
 }
@@ -493,6 +509,8 @@ export default function App() {
               { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length, action: () => addCreature('snail'), remove: () => removeCreature('snail') },
               { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length, action: () => addPlant('moss'), remove: () => removePlant('moss') },
               { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length, action: () => addPlant('fern'), remove: () => removePlant('fern') },
+              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length, action: () => addPlant('flower'), remove: () => removePlant('flower') },
+              { type: 'tallplant', icon: <TallPlantIcon />, label: 'Tall Plant', count: plants.filter(p => p.type === 'tallplant').length, action: () => addPlant('tallplant'), remove: () => removePlant('tallplant') },
               { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers, action: addSubstrate, remove: removeSubstrate },
             ].map(({ type, icon, label, count, action, remove }) => (
               <div className="item-card" key={type}>
