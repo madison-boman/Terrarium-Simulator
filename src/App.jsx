@@ -665,7 +665,7 @@ export default function App() {
                     transform: `translateX(-50%) scale(${plant.size})`,
                     backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
                     backgroundSize: `${PLANT_COLS * 100}% ${PLANT_ROWS * 100}%`,
-                    backgroundPosition: `${(plant.frame / (PLANT_COLS - 1)) * 100}% ${(plant.health / (PLANT_ROWS - 1)) * 100}%`,
+                    backgroundPosition: `${(plant.health / (PLANT_COLS - 1)) * 100}% ${(plant.frame / (PLANT_ROWS - 1)) * 100}%`,
                   }} />
                 ))}
 
