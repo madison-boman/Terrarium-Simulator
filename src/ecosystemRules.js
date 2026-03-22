@@ -16,6 +16,7 @@ export function calculateEcosystemLongevity({
   plants,
   snails,
   pillBugs,
+  ants,
   moisture,
   lighting,
   soil,
@@ -23,7 +24,8 @@ export function calculateEcosystemLongevity({
 }) {
   const livingSnails = snails.filter((s) => s.phase !== 'dead').length;
   const livingPillBugs = pillBugs.filter((b) => b.phase !== 'dead').length;
-  const totalCreatures = livingSnails + livingPillBugs;
+  const livingAnts = (ants || []).filter((a) => a.phase !== 'dead').length;
+  const totalCreatures = livingSnails + livingPillBugs + livingAnts;
   const plantCount = plants.length;
   const totalOrganisms = totalCreatures + plantCount;
 
@@ -106,8 +108,9 @@ export function calculateEcosystemLongevity({
   const kinds = new Set();
   if (livingSnails > 0) kinds.add('snail');
   if (livingPillBugs > 0) kinds.add('pillbug');
+  if (livingAnts > 0) kinds.add('ant');
   plants.forEach((p) => kinds.add(p.type));
-  const balanceScore = clamp(kinds.size / 4.5, 0.12, 1);
+  const balanceScore = clamp(kinds.size / 5, 0.12, 1);
 
   // ──────────────────────────────────────
   //  LONGEVITY CALCULATION

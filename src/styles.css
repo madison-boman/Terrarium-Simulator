@@ -536,6 +536,19 @@ body {
   background-repeat: no-repeat;
 }
 
+.ant-sprite {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+}
+
+.ant-sprite.dead {
+  filter: grayscale(1) opacity(0.4);
+}
+
 .snail-sprite,
 .snail-fallback {
   position: absolute;

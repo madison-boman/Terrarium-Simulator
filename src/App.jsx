@@ -8,6 +8,10 @@ const SNAIL_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 const PILLBUG_COLS = 3;
 const PILLBUG_ROWS_COUNT = 4;
 const PILLBUG_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
+
+const ANT_COLS = 3;
+const ANT_ROWS_COUNT = 4;
+const ANT_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 const PLANT_COLS = 3;
 const PLANT_ROWS = 3;
 const PLANT_SHEET_BY_TYPE = {
@@ -43,6 +47,14 @@ function createPillBug(id) {
   };
 }
 
+function createAnt(id) {
+  return {
+    id, kind: 'ant',
+    x: randomRange(12, 88), y: randomRange(60, 90),
+    vx: Math.random() > 0.5 ? 1.2 : -1.2,
+    phase: 'moving', frame: 0, vitality: randomRange(60, 90),
+  };
+}
 
 function createPlant(id, type) {
   return {
@@ -123,6 +135,22 @@ function SnailIcon() {
   );
 }
 
+function AntIcon() {
+  return (
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <ellipse cx="28" cy="48" rx="10" ry="7" fill="#3A2A1A" />
+      <ellipse cx="46" cy="46" rx="14" ry="9" fill="#4A3A2A" />
+      <circle cx="18" cy="44" r="6" fill="#3A2A1A" />
+      <circle cx="14" cy="38" r="2" fill="#2A1A0A" />
+      <circle cx="20" cy="36" r="2" fill="#2A1A0A" />
+      <line x1="14" y1="38" x2="8" y2="28" stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="20" y1="36" x2="18" y2="26" stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
+      {[24, 32, 42, 50, 56].map((x, i) => (
+        <line key={x} x1={x} y1={i < 2 ? 54 : 54} x2={x + (i < 2 ? -6 : i === 2 ? 0 : 6)} y2={66} stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
+      ))}
+    </svg>
+  );
+}
 
 function WaterDropIcon() {
   return (
@@ -231,6 +259,7 @@ export default function App() {
 
   const [snails, setSnails] = useState([]);
   const [pillBugs, setPillBugs] = useState([]);
+  const [ants, setAnts] = useState([]);
   const [plants, setPlants] = useState([]);
   const [microbes, setMicrobes] = useState([]);
   const [soilLayers, setSoilLayers] = useState(0);
@@ -244,7 +273,8 @@ export default function App() {
 
   const livingSnails = useMemo(() => snails.filter(s => s.phase !== 'dead').length, [snails]);
   const livingPillBugs = useMemo(() => pillBugs.filter(b => b.phase !== 'dead').length, [pillBugs]);
-  const totalCreatures = livingSnails + livingPillBugs;
+  const livingAnts = useMemo(() => ants.filter(a => a.phase !== 'dead').length, [ants]);
+  const totalCreatures = livingSnails + livingPillBugs + livingAnts;
 
   const ecosystemStability = useMemo(() => {
     const moistureFit = moisture === 2 ? 100 : moisture === 1 ? 75 : moisture === 3 ? 60 : 30;
@@ -252,7 +282,7 @@ export default function App() {
     const soilFit = 100 - Math.abs(soil - 58) * 1.3;
     const biodiversity = clamp(
       plants.length * 6 + microbes.length * 0.7 +
-      livingSnails * 7 + livingPillBugs * 5,
+      livingSnails * 7 + livingPillBugs * 5 + livingAnts * 4,
       0, 100
     );
     const organismPressure = Math.max(0, totalCreatures * 6 - plants.length * 4);
@@ -264,7 +294,7 @@ export default function App() {
       0, 100
     );
   }, [moisture, lighting, soil, plants.length, microbes.length,
-      livingSnails, livingPillBugs,
+      livingSnails, livingPillBugs, livingAnts,
       totalCreatures, soilLayers]);
 
   const plantHealthRow = useMemo(() => {
@@ -279,12 +309,13 @@ export default function App() {
         plants,
         snails,
         pillBugs,
+        ants,
         moisture,
         lighting,
         soil,
         soilLayers,
       }),
-    [plants, snails, pillBugs, moisture, lighting, soil, soilLayers]
+    [plants, snails, pillBugs, ants, moisture, lighting, soil, soilLayers]
   );
 
   const timelineProgress = useMemo(() => {
@@ -303,6 +334,10 @@ export default function App() {
       setPillBugs(current => current.map(bug => {
         if (bug.phase === 'dead') return bug;
         return { ...bug, phase: 'idle', frame: (bug.frame + 1) % PILLBUG_COLS };
+      }));
+      setAnts(current => current.map(ant => {
+        if (ant.phase === 'dead') return ant;
+        return { ...ant, phase: 'idle', frame: (ant.frame + 1) % ANT_COLS };
       }));
       setPlants(current => current.map(plant => ({
         ...plant, frame: (plant.frame + 1) % PLANT_COLS,
@@ -381,6 +416,20 @@ export default function App() {
         return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % PILLBUG_COLS, vitality };
       }));
 
+      setAnts(current => current.map(ant => {
+        if (ant.phase === 'dead') return ant;
+        let { phase, vx, x, vitality } = ant;
+        const y = clamp(ant.y + randomRange(-0.3, 0.3), 58, 92);
+        vitality = clamp(vitality - (moisture === 0 ? 0.2 : 0) + soil * 0.01, 0, 100);
+        if (vitality <= 0) return { ...ant, vitality: 0, phase: 'dead', frame: 0 };
+        if (Math.random() < 0.04) phase = 'idle';
+        else if (phase === 'idle' && Math.random() < 0.4) phase = 'moving';
+        if (phase === 'moving') x += vx * 0.6;
+        if (x < 8 || x > 92) { phase = 'turning'; vx = -vx; x = clamp(x, 8, 92); }
+        else if (phase === 'turning' && Math.random() < 0.5) phase = 'moving';
+        return { ...ant, x, y, vx, phase, frame: (ant.frame + 1) % ANT_COLS, vitality };
+      }));
+
       setScore(v => {
         const humidityBonus = moisture === 2 ? 24 : moisture === 1 ? 16 : moisture === 3 ? 12 : 0;
         const stabilityBonus = ecosystemStability * 0.8;
@@ -403,6 +452,7 @@ export default function App() {
     switch (type) {
       case 'pillbug': setPillBugs(c => [...c, createPillBug(id)]); break;
       case 'snail':   setSnails(c => [...c, createSnail(id)]); break;
+      case 'ant':     setAnts(c => [...c, createAnt(id)]); break;
     }
   }
 
@@ -431,6 +481,7 @@ export default function App() {
     switch (type) {
       case 'pillbug': setPillBugs(c => c.length ? c.slice(0, -1) : c); break;
       case 'snail':   setSnails(c => c.length ? c.slice(0, -1) : c); break;
+      case 'ant':     setAnts(c => c.length ? c.slice(0, -1) : c); break;
     }
   }
 
@@ -455,6 +506,7 @@ export default function App() {
   function handlePlay() {
     const hasLife = snails.some(s => s.phase !== 'dead') ||
                     pillBugs.some(b => b.phase !== 'dead') ||
+                    ants.some(a => a.phase !== 'dead') ||
                     plants.length > 0;
     if (!hasLife) {
       setMessage('Cannot start — the jar is empty!');
@@ -484,6 +536,7 @@ export default function App() {
     setSoilLayers(0);
     setSnails([]);
     setPillBugs([]);
+    setAnts([]);
     setPlants([]);
     setMicrobes([]);
     setFogs([]);
@@ -520,6 +573,7 @@ export default function App() {
             {[
               { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length, action: () => addCreature('pillbug'), remove: () => removeCreature('pillbug') },
               { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length, action: () => addCreature('snail'), remove: () => removeCreature('snail') },
+              { type: 'ant', icon: <AntIcon />, label: 'Ant', count: ants.length, action: () => addCreature('ant'), remove: () => removeCreature('ant') },
               { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length, action: () => addPlant('moss'), remove: () => removePlant('moss') },
               { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length, action: () => addPlant('fern'), remove: () => removePlant('fern') },
               { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length, action: () => addPlant('flower'), remove: () => removePlant('flower') },
@@ -602,6 +656,19 @@ export default function App() {
                       backgroundImage: "url('/assets/creatures/pillbug.png')",
                       backgroundSize: `${PILLBUG_COLS * 100}% ${PILLBUG_ROWS_COUNT * 100}%`,
                       backgroundPosition: `${(bug.frame / (PILLBUG_COLS - 1)) * 100}% ${(bugRow / (PILLBUG_ROWS_COUNT - 1)) * 100}%`,
+                    }} />
+                  );
+                })}
+
+                {ants.map(ant => {
+                  const antRow = ANT_ROWS[ant.phase] ?? ANT_ROWS.idle;
+                  return (
+                    <div key={ant.id} className={`ant-sprite ${ant.phase === 'dead' ? 'dead' : ''}`} style={{
+                      left: `${ant.x}%`, top: `${ant.y}%`,
+                      transform: `translate(-50%, -50%) scaleX(${ant.vx < 0 ? -1 : 1})`,
+                      backgroundImage: "url('/assets/creatures/ant.png')",
+                      backgroundSize: `${ANT_COLS * 100}% ${ANT_ROWS_COUNT * 100}%`,
+                      backgroundPosition: `${(ant.frame / (ANT_COLS - 1)) * 100}% ${(antRow / (ANT_ROWS_COUNT - 1)) * 100}%`,
                     }} />
                   );
                 })}
