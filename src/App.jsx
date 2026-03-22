@@ -681,10 +681,11 @@ export default function App() {
 
                 {pillBugs.map(bug => {
                   const bugRow = PILLBUG_ROWS[bug.phase] ?? PILLBUG_ROWS.idle;
+                  const bugDead = bug.phase === 'dead';
                   return (
-                    <div key={bug.id} className={`pillbug-sprite ${bug.phase === 'dead' ? 'dead' : ''}`} style={{
+                    <div key={bug.id} className={`pillbug-sprite ${bugDead ? 'dead' : ''}`} style={{
                       left: `${bug.x}%`, top: `${bug.y}%`,
-                      transform: `translate(-50%, -50%) scaleX(${bug.vx < 0 ? -1 : 1})`,
+                      transform: `translate(-50%, -50%) scaleX(${bug.vx < 0 ? -1 : 1})${bugDead ? ' rotate(180deg)' : ''}`,
                       backgroundImage: "url('/assets/creatures/pillbug.png')",
                       backgroundSize: `${PILLBUG_COLS * 100}% ${PILLBUG_ROWS_COUNT * 100}%`,
                       backgroundPosition: `${(bug.frame / (PILLBUG_COLS - 1)) * 100}% ${(bugRow / (PILLBUG_ROWS_COUNT - 1)) * 100}%`,
@@ -694,10 +695,11 @@ export default function App() {
 
                 {ants.map(ant => {
                   const antRow = ANT_ROWS[ant.phase] ?? ANT_ROWS.idle;
+                  const antDead = ant.phase === 'dead';
                   return (
-                    <div key={ant.id} className={`ant-sprite ${ant.phase === 'dead' ? 'dead' : ''}`} style={{
+                    <div key={ant.id} className={`ant-sprite ${antDead ? 'dead' : ''}`} style={{
                       left: `${ant.x}%`, top: `${ant.y}%`,
-                      transform: `translate(-50%, -50%) scaleX(${ant.vx < 0 ? -1 : 1})`,
+                      transform: `translate(-50%, -50%) scaleX(${ant.vx < 0 ? -1 : 1})${antDead ? ' rotate(180deg)' : ''}`,
                       backgroundImage: "url('/assets/creatures/ant.png')",
                       backgroundSize: `${ANT_COLS * 100}% ${ANT_ROWS_COUNT * 100}%`,
                       backgroundPosition: `${(ant.frame / (ANT_COLS - 1)) * 100}% ${(antRow / (ANT_ROWS_COUNT - 1)) * 100}%`,
@@ -708,18 +710,19 @@ export default function App() {
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
                   const row = SNAIL_ROWS[snail.phase] ?? SNAIL_ROWS.idle;
+                  const snailDead = snail.phase === 'dead';
                   if (!snailSprite.ready) {
                     return (
-                      <div key={snail.id} className={`snail-fallback ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
+                      <div key={snail.id} className={`snail-fallback ${snailDead ? 'dead' : ''}`} style={{
                         left: `${snail.x}%`, top: `${snail.y}%`,
-                        transform: `translate(-50%, -50%) scaleX(${flip})`,
+                        transform: `translate(-50%, -50%) scaleX(${flip})${snailDead ? ' rotate(180deg)' : ''}`,
                       }}>🐌</div>
                     );
                   }
                   return (
-                    <div key={snail.id} className={`snail-sprite ${snail.phase === 'dead' ? 'dead' : ''}`} style={{
+                    <div key={snail.id} className={`snail-sprite ${snailDead ? 'dead' : ''}`} style={{
                       left: `${snail.x}%`, top: `${snail.y}%`,
-                      transform: `translate(-50%, -50%) scaleX(${flip})`,
+                      transform: `translate(-50%, -50%) scaleX(${flip})${snailDead ? ' rotate(180deg)' : ''}`,
                       backgroundImage: "url('/assets/creatures/snail sprite.png')",
                       backgroundSize: `${SNAIL_COLS * 100}% ${SNAIL_ROWS_COUNT * 100}%`,
                       backgroundPosition: `${(snail.frame / (SNAIL_COLS - 1)) * 100}% ${(row / (SNAIL_ROWS_COUNT - 1)) * 100}%`,
