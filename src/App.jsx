@@ -372,10 +372,12 @@ export default function App() {
         if (nextDay >= longevity.days) {
           setCollapsed(true);
           setRunning(false);
-          setScore(currentScore => {
-            setFinalResults({ day: nextDay, score: currentScore, verdict: longevity.verdict });
-            return currentScore;
-          });
+          setTimeout(() => {
+            setScore(currentScore => {
+              setFinalResults({ day: nextDay, score: currentScore });
+              return currentScore;
+            });
+          }, 3000);
         }
         return nextDay;
       });
@@ -450,6 +452,23 @@ export default function App() {
     }, 150);
     return () => clearInterval(timer);
   }, [running, collapsed, moisture, soil, ecosystemStability, totalCreatures, longevity.days, longevity.reason]);
+
+  useEffect(() => {
+    if (!running || collapsed) return;
+    const allDead = totalCreatures === 0 && plants.every(p => p.health >= 2);
+    const hasOrganisms = snails.length > 0 || pillBugs.length > 0 || ants.length > 0 || plants.length > 0;
+    if (!hasOrganisms || !allDead) return;
+
+    setCollapsed(true);
+    setRunning(false);
+    const timeout = setTimeout(() => {
+      setScore(currentScore => {
+        setFinalResults({ day, score: currentScore });
+        return currentScore;
+      });
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [running, collapsed, totalCreatures, plants, snails.length, pillBugs.length, ants.length, day]);
 
   const jarOpen = !running;
   const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 : 0;
