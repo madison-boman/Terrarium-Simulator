@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { calculateEcosystemLongevity, getVerdictStyle, getTip } from './ecosystemRules';
 
 const SNAIL_COLS = 3;
 const SNAIL_ROWS_COUNT = 4;
@@ -204,6 +205,7 @@ export default function App() {
   const [microbes, setMicrobes] = useState([]);
   const [soilLayers, setSoilLayers] = useState(0);
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
+  const [collapsed, setCollapsed] = useState(false);
 
   const snailSprite = useAsset('/assets/creatures/snail sprite.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
@@ -239,6 +241,21 @@ export default function App() {
     return 2;
   }, [ecosystemStability]);
 
+  const longevity = useMemo(
+    () =>
+      calculateEcosystemLongevity({
+        plants,
+        snails,
+        pillBugs,
+        moisture,
+        lighting,
+        soil,
+        soilLayers,
+      }),
+    [plants, snails, pillBugs, moisture, lighting, soil, soilLayers]
+  );
+
+  const daysRemaining = Math.max(0, longevity.days - day);
 
   const timelineProgress = useMemo(() => {
     if (day >= 365) return 100;
@@ -266,9 +283,22 @@ export default function App() {
 
   /* ── Simulation (runs when playing) ── */
   useEffect(() => {
-    if (!running) return undefined;
+    if (!running || collapsed) return undefined;
     const timer = setInterval(() => {
-      setDay(v => v + 1);
+      setDay(prev => {
+        const nextDay = prev + 1;
+        if (longevity.days > 0 && nextDay >= longevity.days) {
+          setCollapsed(true);
+          setRunning(false);
+          setMessage(`Ecosystem collapsed on day ${nextDay}. ${longevity.reason}`);
+        }
+        if (longevity.days === 0) {
+          setCollapsed(true);
+          setRunning(false);
+          setMessage('Ecosystem failed immediately — jar cannot sustain life.');
+        }
+        return nextDay;
+      });
 
       setSnails(current => current.map(snail => {
         if (snail.phase === 'dead') return snail;
@@ -311,7 +341,7 @@ export default function App() {
       else setMessage('System stable — keep tuning for a higher score.');
     }, 150);
     return () => clearInterval(timer);
-  }, [running, moisture, soil, ecosystemStability, totalCreatures]);
+  }, [running, collapsed, moisture, soil, ecosystemStability, totalCreatures, longevity.days, longevity.reason]);
 
   const jarOpen = !running;
   const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 : 0;
@@ -361,8 +391,21 @@ export default function App() {
     setSoil(v => clamp(v - 6, 0, 100));
   }
 
+  function handlePlay() {
+    if (longevity.days === 0) {
+      setMessage(`Cannot start — ${longevity.reason}`);
+      return;
+    }
+    if (collapsed) {
+      setMessage('Ecosystem has collapsed. Reset to try again.');
+      return;
+    }
+    setRunning(v => !v);
+  }
+
   function resetWorld() {
     setRunning(false);
+    setCollapsed(false);
     setDay(0);
     setScore(0);
     setMoisture(0);
@@ -422,6 +465,49 @@ export default function App() {
         {/* Center: Glass Jar */}
         <div className="center-stage">
           <h2 className="center-heading">Glass Jar Simulation View</h2>
+
+          <div className="longevity-strip">
+            <div className="longevity-left">
+              <span className="verdict-badge" style={{ background: getVerdictStyle(longevity.verdict) }}>
+                {longevity.verdict}
+              </span>
+              <span className="longevity-est">
+                <strong>{longevity.days}</strong> estimated days
+              </span>
+              {running && !collapsed && (
+                <span className="longevity-remaining">
+                  <strong>{daysRemaining}</strong> remaining
+                </span>
+              )}
+              {collapsed && (
+                <span className="longevity-collapsed-tag">
+                  Collapsed day {day}
+                </span>
+              )}
+            </div>
+            <div className="longevity-factors">
+              {Object.entries(longevity.breakdown).map(([key, value]) => (
+                <div key={key} className="factor-cell" title={getTip(key, value)}>
+                  <span className="factor-label">{key}</span>
+                  <div className="factor-bar-track">
+                    <div
+                      className="factor-bar-fill"
+                      style={{
+                        width: `${value}%`,
+                        background:
+                          value >= 70 ? 'var(--green)' :
+                          value >= 40 ? 'var(--amber)' :
+                          'var(--rose)',
+                      }}
+                    />
+                  </div>
+                  <span className="factor-val">{value}</span>
+                </div>
+              ))}
+            </div>
+            <div className="longevity-msg">{longevity.reason}</div>
+          </div>
+
           <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
               {moisture > 0 && (
@@ -534,7 +620,7 @@ export default function App() {
           </div>
         </div>
         <div className="timeline-right">
-          <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={() => setRunning(v => !v)}>
+          <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={handlePlay} disabled={collapsed}>
             {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
           </button>
           <button className="reset-btn" onClick={resetWorld}>Reset</button>
