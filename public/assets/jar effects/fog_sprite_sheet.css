@@ -1,0 +1,43 @@
+.sprite-1 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 128px;
+     width: 128px;
+     background-position: -0px -0px;
+ }
+ .sprite-2 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 128px;
+     width: 128px;
+     background-position: -128px -0px;
+ }
+ .sprite-3 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 128px;
+     width: 128px;
+     background-position: -256px -0px;
+ }
+ .sprite-4 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 128px;
+     width: 128px;
+     background-position: -384px -0px;
+ }
+ .sprite-5 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 128px;
+     width: 128px;
+     background-position: -512px -0px;
+ }
+ .sprite-6 {
+     background: url(sprite_sheet.png);
+     display: inline-block;
+     height: 128px;
+     width: 128px;
+     background-position: -640px -0px;
+ }
+ 
