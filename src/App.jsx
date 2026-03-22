@@ -495,7 +495,21 @@ export default function App() {
   return (
     <div className="game-container">
       {/* Title */}
-      <h1 className="game-title">Terrarium Simulator Game</h1>
+      <div className="game-hud-bar">
+        <span className="hud-title">Terrarium Simulator</span>
+        <div className="hud-stats">
+          <div className="hud-stat">
+            <span className="hud-stat-icon">☀</span>
+            <span className="hud-stat-label">Day</span>
+            <span className="hud-stat-value">{day}</span>
+          </div>
+          <div className="hud-stat">
+            <span className="hud-stat-icon">★</span>
+            <span className="hud-stat-label">Score</span>
+            <span className="hud-stat-value">{score.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
 
       {/* Main Row: Sidebar / Jar + Timeline */}
       <div className="main-row">
