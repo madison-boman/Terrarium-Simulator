@@ -32,7 +32,7 @@ function randomRange(min, max) {
 function createSnail(id) {
   return {
     id, kind: 'snail',
-    x: randomRange(16, 84), y: randomRange(66, 82),
+    x: randomRange(22, 78), y: randomRange(66, 78),
     vx: Math.random() > 0.5 ? 1 : -1,
     phase: 'moving', frame: 0, vitality: randomRange(50, 72),
   };
@@ -41,7 +41,7 @@ function createSnail(id) {
 function createPillBug(id) {
   return {
     id, kind: 'pillbug',
-    x: randomRange(14, 86), y: randomRange(72, 88),
+    x: randomRange(22, 78), y: randomRange(72, 82),
     vx: Math.random() > 0.5 ? 0.7 : -0.7,
     phase: 'moving', frame: 0, vitality: randomRange(55, 78),
   };
@@ -50,7 +50,7 @@ function createPillBug(id) {
 function createAnt(id) {
   return {
     id, kind: 'ant',
-    x: randomRange(12, 88), y: randomRange(60, 90),
+    x: randomRange(20, 80), y: randomRange(60, 82),
     vx: Math.random() > 0.5 ? 1.2 : -1.2,
     phase: 'moving', frame: 0, vitality: randomRange(42, 62),
   };
@@ -62,7 +62,7 @@ function createPlant(id, type) {
     : [0.55, 0.95];
   return {
     id, type,
-    x: randomRange(18, 82),
+    x: randomRange(24, 76),
     size: randomRange(...sizeRange),
     frame: Math.floor(randomRange(0, PLANT_COLS)),
     health: 0,
@@ -389,7 +389,7 @@ export default function App() {
       setSnails(current => current.map(snail => {
         if (snail.phase === 'dead') return snail;
         let { phase, vx, x, vitality } = snail;
-        const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
+        const y = clamp(snail.y + randomRange(-0.2, 0.2), 66, 78);
         const dryPenalty = moisture === 0 ? 0.3 : 0;
         const moldPenalty = moisture === 3 ? 0.1 : 0;
         vitality = clamp(vitality - 0.22 - dryPenalty - moldPenalty + soil * 0.003, 0, 100);
@@ -397,7 +397,7 @@ export default function App() {
         if (Math.random() < 0.03) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.3) phase = 'moving';
         if (phase === 'moving') x += vx * (0.46 + moisture * 0.15);
-        if (x < 12 || x > 88) { phase = 'turning'; vx = -vx; x = clamp(x, 12, 88); }
+        if (x < 18 || x > 82) { phase = 'turning'; vx = -vx; x = clamp(x, 18, 82); }
         else if (phase === 'turning' && Math.random() < 0.4) phase = 'moving';
         return { ...snail, x, y, vx, phase, frame: (snail.frame + 1) % (phase === 'dead' ? 1 : SNAIL_COLS), vitality };
       }));
@@ -405,26 +405,26 @@ export default function App() {
       setPillBugs(current => current.map(bug => {
         if (bug.phase === 'dead') return bug;
         let { phase, vx, x, vitality } = bug;
-        const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 90);
+        const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 82);
         vitality = clamp(vitality - 0.25 - (moisture === 0 ? 0.15 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...bug, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.05) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
         if (phase === 'moving') x += vx * 0.35;
-        if (x < 10 || x > 90) { vx = -vx; x = clamp(x, 10, 90); }
+        if (x < 18 || x > 82) { vx = -vx; x = clamp(x, 18, 82); }
         return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % PILLBUG_COLS, vitality };
       }));
 
       setAnts(current => current.map(ant => {
         if (ant.phase === 'dead') return ant;
         let { phase, vx, x, vitality } = ant;
-        const y = clamp(ant.y + randomRange(-0.3, 0.3), 58, 92);
+        const y = clamp(ant.y + randomRange(-0.3, 0.3), 60, 82);
         vitality = clamp(vitality - 0.24 - (moisture === 0 ? 0.2 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...ant, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.04) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.4) phase = 'moving';
         if (phase === 'moving') x += vx * 0.6;
-        if (x < 8 || x > 92) { phase = 'turning'; vx = -vx; x = clamp(x, 8, 92); }
+        if (x < 16 || x > 84) { phase = 'turning'; vx = -vx; x = clamp(x, 16, 84); }
         else if (phase === 'turning' && Math.random() < 0.5) phase = 'moving';
         return { ...ant, x, y, vx, phase, frame: (ant.frame + 1) % ANT_COLS, vitality };
       }));
