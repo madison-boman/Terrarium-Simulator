@@ -222,6 +222,54 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Toggle card (soil) */
+
+.toggle-card {
+  appearance: none;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-card .item-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.toggle-card.active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.toggle-state {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.toggle-card.active .toggle-state {
+  color: var(--accent-dark);
+  background: rgba(46, 139, 87, 0.15);
+}
+
 /* Moisture full-width card */
 
 .moisture-card {

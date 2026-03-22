@@ -419,9 +419,12 @@ export default function App() {
     });
   }
 
-  function addSubstrate() {
-    setSoilLayers(v => Math.min(v + 1, 5));
-    setSoil(v => clamp(v + 6, 0, 100));
+  function toggleSoil() {
+    setSoilLayers(v => {
+      const next = v > 0 ? 0 : 1;
+      setSoil(next > 0 ? 62 : 56);
+      return next;
+    });
   }
 
   function removeCreature(type) {
@@ -448,10 +451,6 @@ export default function App() {
     });
   }
 
-  function removeSubstrate() {
-    setSoilLayers(v => Math.max(v - 1, 0));
-    setSoil(v => clamp(v - 6, 0, 100));
-  }
 
   function handlePlay() {
     const hasLife = snails.some(s => s.phase !== 'dead') ||
@@ -511,7 +510,6 @@ export default function App() {
               { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length, action: () => addPlant('fern'), remove: () => removePlant('fern') },
               { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length, action: () => addPlant('flower'), remove: () => removePlant('flower') },
               { type: 'tallplant', icon: <TallPlantIcon />, label: 'Tall Plant', count: plants.filter(p => p.type === 'tallplant').length, action: () => addPlant('tallplant'), remove: () => removePlant('tallplant') },
-              { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers, action: addSubstrate, remove: removeSubstrate },
             ].map(({ type, icon, label, count, action, remove }) => (
               <div className="item-card" key={type}>
                 {icon}
@@ -524,6 +522,11 @@ export default function App() {
               </div>
             ))}
           </div>
+          <button className={`toggle-card ${soilLayers > 0 ? 'active' : ''}`} onClick={toggleSoil}>
+            <SoilIcon />
+            <span className="item-name">Soil</span>
+            <span className="toggle-state">{soilLayers > 0 ? 'On' : 'Off'}</span>
+          </button>
           <div className="item-card moisture-card">
             <WaterDropIcon />
             <div className="moisture-text">
