@@ -188,8 +188,6 @@ function SoilIcon() {
 /* ─── Main App ─── */
 
 export default function App() {
-  const MOISTURE_LABELS = ['None', 'Light', 'Moderate', 'Heavy'];
-
   const [running, setRunning] = useState(false);
   const [day, setDay] = useState(0);
   const [score, setScore] = useState(0);
@@ -415,7 +413,7 @@ export default function App() {
             </div>
             <div className="card-controls">
               <button className="ctrl-btn minus" disabled={moisture === 0} onClick={removeMoisture}>−</button>
-              <span className="ctrl-count">{MOISTURE_LABELS[moisture]}</span>
+              <span className="ctrl-count">{moisture}</span>
               <button className="ctrl-btn plus" disabled={moisture >= 3} onClick={addMoisture}>+</button>
             </div>
           </div>
