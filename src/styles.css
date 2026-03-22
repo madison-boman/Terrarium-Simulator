@@ -337,68 +337,34 @@ body {
 
 /* ── Jar Layers ── */
 
-.soil-overlay {
+.water-level-overlay {
   position: absolute;
   inset: 0;
-  background: url('/assets/jar/soil.png') center / 100% 100% no-repeat;
+  background: url('/assets/jar effects/water levels.png') center / 100% 300% no-repeat;
   image-rendering: pixelated;
   z-index: 1;
   pointer-events: none;
 }
 
-
-.humidity-fog {
+.soil-overlay {
   position: absolute;
-  inset: 6% 10% 24%;
-  border-radius: 28% 28% 38% 38%;
-  background: radial-gradient(
-    circle at 48% 35%,
-    rgba(180, 220, 240, 0.25),
-    rgba(180, 220, 240, 0.08) 45%,
-    transparent 82%
-  );
+  inset: 0;
+  background: url('/assets/jar/soil.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  z-index: 2;
   pointer-events: none;
 }
 
-.fog-overlay {
+.jar-border-overlay {
   position: absolute;
-  inset: 9% 10% 26%;
-  border-radius: 28% 28% 38% 38%;
-  background-image: url('/assets/jar effects/fog.png');
-  background-size: 800% 100%;
-  background-repeat: no-repeat;
-  background-position: 0% 50%;
-  mix-blend-mode: screen;
-  filter: saturate(1.05) brightness(1.15);
-  animation: fogSheet 1.2s steps(8) infinite;
+  inset: 0;
+  background: url('/assets/jar/jar-border.png') center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  z-index: 10;
   pointer-events: none;
 }
 
-.water-overlay {
-  position: absolute;
-  inset: 9% 8% 16%;
-  border-radius: 30%;
-  background-image: url('/assets/jar effects/water.png');
-  background-size: 800% 400%;
-  background-repeat: no-repeat;
-  background-position: 0% 66%;
-  mix-blend-mode: screen;
-  animation: dripSheet 1s steps(8) infinite, dripPulse 1.8s ease-in-out infinite alternate;
-  pointer-events: none;
-}
 
-@keyframes fogSheet {
-  from { background-position: 0% 50%; }
-  to { background-position: 100% 50%; }
-}
-@keyframes dripSheet {
-  from { background-position: 0% 0%; }
-  to { background-position: 100% 0%; }
-}
-@keyframes dripPulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.02); }
-}
 
 /* ── Plants ── */
 

@@ -188,13 +188,14 @@ function SoilIcon() {
 /* ─── Main App ─── */
 
 export default function App() {
+  const MOISTURE_LABELS = ['None', 'Light', 'Moderate', 'Heavy'];
+
   const [running, setRunning] = useState(false);
   const [day, setDay] = useState(0);
   const [score, setScore] = useState(0);
-  const [humidity, setHumidity] = useState(60);
+  const [moisture, setMoisture] = useState(0);
   const [lighting, setLighting] = useState(58);
   const [soil, setSoil] = useState(56);
-  const [waterCycle, setWaterCycle] = useState(52);
 
   const nextId = useRef(300);
   function getNextId() { return nextId.current++; }
@@ -208,18 +209,15 @@ export default function App() {
 
   const snailSprite = useAsset('/assets/creatures/snail sprite.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
-  const waterSpriteAsset = useAsset('/assets/jar effects/water.png');
-  const fogSprite = useAsset('/assets/jar effects/fog.png');
 
   const livingSnails = useMemo(() => snails.filter(s => s.phase !== 'dead').length, [snails]);
   const livingPillBugs = useMemo(() => pillBugs.filter(b => b.phase !== 'dead').length, [pillBugs]);
   const totalCreatures = livingSnails + livingPillBugs;
 
   const ecosystemStability = useMemo(() => {
-    const humidityFit = 100 - Math.abs(humidity - 68) * 1.6;
+    const moistureFit = moisture === 2 ? 100 : moisture === 1 ? 75 : moisture === 3 ? 60 : 30;
     const lightFit = 100 - Math.abs(lighting - 62) * 1.5;
     const soilFit = 100 - Math.abs(soil - 58) * 1.3;
-    const moisturePressure = humidity > 82 ? (humidity - 82) * 2.1 : 0;
     const biodiversity = clamp(
       plants.length * 6 + microbes.length * 0.7 +
       livingSnails * 7 + livingPillBugs * 5,
@@ -228,12 +226,12 @@ export default function App() {
     const organismPressure = Math.max(0, totalCreatures * 6 - plants.length * 4);
     const substrateBenefit = clamp(soilLayers * 8, 0, 20);
     return clamp(
-      humidityFit * 0.2 + lightFit * 0.16 + soilFit * 0.16 +
+      moistureFit * 0.22 + lightFit * 0.16 + soilFit * 0.16 +
       biodiversity * 0.3 + substrateBenefit * 0.08 -
-      moisturePressure * 0.5 - organismPressure * 0.28,
+      organismPressure * 0.28,
       0, 100
     );
-  }, [humidity, lighting, soil, plants.length, microbes.length,
+  }, [moisture, lighting, soil, plants.length, microbes.length,
       livingSnails, livingPillBugs,
       totalCreatures, soilLayers]);
 
@@ -278,13 +276,13 @@ export default function App() {
         if (snail.phase === 'dead') return snail;
         let { phase, vx, x, vitality } = snail;
         const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
-        const dryPenalty = humidity < 28 ? (28 - humidity) * 0.18 : 0;
-        const moldPenalty = humidity > 86 ? (humidity - 86) * 0.12 : 0;
+        const dryPenalty = moisture === 0 ? 0.3 : 0;
+        const moldPenalty = moisture === 3 ? 0.1 : 0;
         vitality = clamp(vitality - dryPenalty - moldPenalty + soil * 0.012, 0, 100);
         if (vitality <= 0) return { ...snail, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.03) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.3) phase = 'moving';
-        if (phase === 'moving') x += vx * (0.46 + (humidity / 100) * 0.5);
+        if (phase === 'moving') x += vx * (0.46 + moisture * 0.15);
         if (x < 12 || x > 88) { phase = 'turning'; vx = -vx; x = clamp(x, 12, 88); }
         else if (phase === 'turning' && Math.random() < 0.4) phase = 'moving';
         return { ...snail, x, y, vx, phase, frame: (snail.frame + 1) % (phase === 'dead' ? 1 : SNAIL_COLS), vitality };
@@ -294,7 +292,7 @@ export default function App() {
         if (bug.phase === 'dead') return bug;
         let { phase, vx, x, vitality } = bug;
         const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 90);
-        vitality = clamp(vitality - (humidity < 30 ? 0.15 : 0) + soil * 0.015, 0, 100);
+        vitality = clamp(vitality - (moisture === 0 ? 0.15 : 0) + soil * 0.015, 0, 100);
         if (vitality <= 0) return { ...bug, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.05) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
@@ -304,7 +302,7 @@ export default function App() {
       }));
 
       setScore(v => {
-        const humidityBonus = clamp(24 - Math.abs(humidity - 68), 0, 24);
+        const humidityBonus = moisture === 2 ? 24 : moisture === 1 ? 16 : moisture === 3 ? 12 : 0;
         const stabilityBonus = ecosystemStability * 0.8;
         const survivalBonus = totalCreatures * 2;
         return Math.max(0, Math.round(v + 8 + humidityBonus + stabilityBonus + survivalBonus));
@@ -315,10 +313,8 @@ export default function App() {
       else setMessage('System stable — keep tuning for a higher score.');
     }, 150);
     return () => clearInterval(timer);
-  }, [running, humidity, soil, ecosystemStability, totalCreatures]);
+  }, [running, moisture, soil, ecosystemStability, totalCreatures]);
 
-  const humidityFogOpacity = clamp((humidity - 50) / 70, 0, 0.8);
-  const waterFxOpacity = clamp((humidity - 62) / 38, 0, 0.92);
   const jarOpen = !running;
   const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 : 0;
 
@@ -335,7 +331,7 @@ export default function App() {
   }
 
   function addMoisture() {
-    setHumidity(v => clamp(v + 8, 0, 100));
+    setMoisture(v => Math.min(v + 1, 3));
   }
 
   function addSubstrate() {
@@ -359,7 +355,7 @@ export default function App() {
   }
 
   function removeMoisture() {
-    setHumidity(v => clamp(v - 8, 0, 100));
+    setMoisture(v => Math.max(v - 1, 0));
   }
 
   function removeSubstrate() {
@@ -371,10 +367,9 @@ export default function App() {
     setRunning(false);
     setDay(0);
     setScore(0);
-    setHumidity(60);
+    setMoisture(0);
     setLighting(58);
     setSoil(56);
-    setWaterCycle(52);
     setSoilLayers(0);
     setSnails([]);
     setPillBugs([]);
@@ -419,9 +414,9 @@ export default function App() {
               <span className="item-sub">(Water)</span>
             </div>
             <div className="card-controls">
-              <button className="ctrl-btn minus" disabled={humidity <= 0} onClick={removeMoisture}>−</button>
-              <span className="ctrl-count">{humidity}%</span>
-              <button className="ctrl-btn plus" disabled={humidity >= 100} onClick={addMoisture}>+</button>
+              <button className="ctrl-btn minus" disabled={moisture === 0} onClick={removeMoisture}>−</button>
+              <span className="ctrl-count">{MOISTURE_LABELS[moisture]}</span>
+              <button className="ctrl-btn plus" disabled={moisture >= 3} onClick={addMoisture}>+</button>
             </div>
           </div>
         </div>
@@ -431,15 +426,13 @@ export default function App() {
           <h2 className="center-heading">Glass Jar Simulation View</h2>
           <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
+              {moisture > 0 && (
+                <div className="water-level-overlay" style={{
+                  backgroundPosition: `0% ${((moisture - 1) / 2) * 100}%`,
+                }} />
+              )}
               {soilLayers > 0 && <div className="soil-overlay" />}
               <div className="jar-interior">
-                <div className="humidity-fog" style={{ opacity: humidityFogOpacity }} />
-                {fogSprite.ready && humidity > 52 && (
-                  <div className="fog-overlay" style={{ opacity: humidityFogOpacity * 0.85 }} />
-                )}
-                {waterSpriteAsset.ready && humidity > 58 && (
-                  <div className="water-overlay" style={{ opacity: waterFxOpacity }} />
-                )}
 
                 {plants.map(plant => (
                   <div key={plant.id} className={`plant ${plant.type}`} style={{
@@ -495,6 +488,7 @@ export default function App() {
                 })}
               </div>
               {!jarSprite.ready && <div className="jar-fallback-glass" />}
+              <div className="jar-border-overlay" />
             </div>
           </div>
         </div>
