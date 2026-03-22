@@ -34,7 +34,7 @@ function createSnail(id) {
     id, kind: 'snail',
     x: randomRange(16, 84), y: randomRange(66, 82),
     vx: Math.random() > 0.5 ? 1 : -1,
-    phase: 'moving', frame: 0, vitality: randomRange(70, 96),
+    phase: 'moving', frame: 0, vitality: randomRange(50, 72),
   };
 }
 
@@ -43,7 +43,7 @@ function createPillBug(id) {
     id, kind: 'pillbug',
     x: randomRange(14, 86), y: randomRange(72, 88),
     vx: Math.random() > 0.5 ? 0.7 : -0.7,
-    phase: 'moving', frame: 0, vitality: randomRange(75, 100),
+    phase: 'moving', frame: 0, vitality: randomRange(55, 78),
   };
 }
 
@@ -52,7 +52,7 @@ function createAnt(id) {
     id, kind: 'ant',
     x: randomRange(12, 88), y: randomRange(60, 90),
     vx: Math.random() > 0.5 ? 1.2 : -1.2,
-    phase: 'moving', frame: 0, vitality: randomRange(60, 90),
+    phase: 'moving', frame: 0, vitality: randomRange(42, 62),
   };
 }
 
@@ -392,7 +392,7 @@ export default function App() {
         const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
         const dryPenalty = moisture === 0 ? 0.3 : 0;
         const moldPenalty = moisture === 3 ? 0.1 : 0;
-        vitality = clamp(vitality - dryPenalty - moldPenalty + soil * 0.012, 0, 100);
+        vitality = clamp(vitality - 0.22 - dryPenalty - moldPenalty + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...snail, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.03) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.3) phase = 'moving';
@@ -406,7 +406,7 @@ export default function App() {
         if (bug.phase === 'dead') return bug;
         let { phase, vx, x, vitality } = bug;
         const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 90);
-        vitality = clamp(vitality - (moisture === 0 ? 0.15 : 0) + soil * 0.015, 0, 100);
+        vitality = clamp(vitality - 0.25 - (moisture === 0 ? 0.15 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...bug, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.05) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
@@ -419,7 +419,7 @@ export default function App() {
         if (ant.phase === 'dead') return ant;
         let { phase, vx, x, vitality } = ant;
         const y = clamp(ant.y + randomRange(-0.3, 0.3), 58, 92);
-        vitality = clamp(vitality - (moisture === 0 ? 0.2 : 0) + soil * 0.01, 0, 100);
+        vitality = clamp(vitality - 0.24 - (moisture === 0 ? 0.2 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...ant, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.04) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.4) phase = 'moving';
