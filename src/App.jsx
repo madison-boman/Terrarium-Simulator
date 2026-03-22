@@ -432,24 +432,27 @@ export default function App() {
       {/* Title */}
       <h1 className="game-title">Terrarium Simulator Game</h1>
 
-      {/* Main Row: Left Panel / Jar / Right Panel */}
+      {/* Main Row: Sidebar / Jar + Timeline */}
       <div className="main-row">
 
-        {/* Left: Creatures & Elements */}
         <div className="side-panel">
-          <h2 className="panel-heading">Creatures & Elements</h2>
+          <h2 className="panel-heading">Add to Jar</h2>
           <div className="item-grid">
             {[
-              { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length },
-              { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length },
-            ].map(({ type, icon, label, count }) => (
+              { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length, action: () => addCreature('pillbug'), remove: () => removeCreature('pillbug') },
+              { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length, action: () => addCreature('snail'), remove: () => removeCreature('snail') },
+              { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length, action: () => addPlant('moss'), remove: () => removePlant('moss') },
+              { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length, action: () => addPlant('fern'), remove: () => removePlant('fern') },
+              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length, action: () => addPlant('flower'), remove: () => removePlant('flower') },
+              { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers, action: addSubstrate, remove: removeSubstrate },
+            ].map(({ type, icon, label, count, action, remove }) => (
               <div className="item-card" key={type}>
                 {icon}
                 <span className="item-name">{label}</span>
                 <div className="card-controls">
-                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => removeCreature(type)}>−</button>
+                  <button className="ctrl-btn minus" disabled={count === 0} onClick={remove}>−</button>
                   <span className="ctrl-count">{count}</span>
-                  <button className="ctrl-btn plus" onClick={() => addCreature(type)}>+</button>
+                  <button className="ctrl-btn plus" onClick={action}>+</button>
                 </div>
               </div>
             ))}
@@ -468,10 +471,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Center: Glass Jar */}
-        <div className="center-stage">
-          <h2 className="center-heading">Glass Jar Simulation View</h2>
-
+        <div className="jar-column">
           <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
               {moisture > 0 && (
@@ -512,7 +512,6 @@ export default function App() {
                   );
                 })}
 
-
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
                   const row = SNAIL_ROWS[snail.phase] ?? SNAIL_ROWS.idle;
@@ -539,28 +538,29 @@ export default function App() {
               <div className="jar-border-overlay" />
             </div>
           </div>
-        </div>
 
-        {/* Right: Plants & Substrate */}
-        <div className="side-panel">
-          <h2 className="panel-heading">Plants & Substrate</h2>
-          <div className="item-grid">
-            {[
-              { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length },
-              { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length },
-              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length },
-              { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers },
-            ].map(({ type, icon, label, count }) => (
-              <div className="item-card" key={type}>
-                {icon}
-                <span className="item-name">{label}</span>
-                <div className="card-controls">
-                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => type === 'soil' ? removeSubstrate() : removePlant(type)}>−</button>
-                  <span className="ctrl-count">{count}</span>
-                  <button className="ctrl-btn plus" onClick={() => type === 'soil' ? addSubstrate() : addPlant(type)}>+</button>
-                </div>
+          <div className="timeline-bar">
+            <div className="timeline-left">
+              <span className="timeline-label">Timeline</span>
+            </div>
+            <div className="timeline-center">
+              <div className="timeline-markers">
+                <span className={day >= 0 ? 'tm active' : 'tm'}>Day 0</span>
+                <span className={day >= 7 ? 'tm active' : 'tm'}>Week 1</span>
+                <span className={day >= 30 ? 'tm active' : 'tm'}>Month 1</span>
+                <span className={day >= 365 ? 'tm active' : 'tm'}>Year 1</span>
               </div>
-            ))}
+              <div className="timeline-track">
+                <div className="timeline-fill" style={{ width: `${timelineProgress}%` }} />
+                <div className="timeline-thumb" style={{ left: `${timelineProgress}%` }} />
+              </div>
+            </div>
+            <div className="timeline-right">
+              <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={handlePlay} disabled={collapsed}>
+                {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
+              </button>
+              <button className="reset-btn" onClick={resetWorld}>Reset</button>
+            </div>
           </div>
         </div>
 
@@ -585,30 +585,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Bottom: Simulation Timeline */}
-      <div className="timeline-bar">
-        <div className="timeline-left">
-          <span className="timeline-label">Simulation Timeline</span>
-        </div>
-        <div className="timeline-center">
-          <div className="timeline-markers">
-            <span className={day >= 0 ? 'tm active' : 'tm'}>Day 0</span>
-            <span className={day >= 7 ? 'tm active' : 'tm'}>Week 1</span>
-            <span className={day >= 30 ? 'tm active' : 'tm'}>Month 1</span>
-            <span className={day >= 365 ? 'tm active' : 'tm'}>Year 1</span>
-          </div>
-          <div className="timeline-track">
-            <div className="timeline-fill" style={{ width: `${timelineProgress}%` }} />
-            <div className="timeline-thumb" style={{ left: `${timelineProgress}%` }} />
-          </div>
-        </div>
-        <div className="timeline-right">
-          <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={handlePlay} disabled={collapsed}>
-            {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
-          </button>
-          <button className="reset-btn" onClick={resetWorld}>Reset</button>
-        </div>
-      </div>
     </div>
   );
 }

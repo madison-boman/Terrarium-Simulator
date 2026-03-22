@@ -89,10 +89,10 @@ body {
   overflow: hidden;
 }
 
-/* ─── Side Panels ─── */
+/* ─── Side Panel ─── */
 
 .side-panel {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
   background: var(--bg-panel);
   backdrop-filter: blur(16px);
@@ -102,11 +102,6 @@ body {
   padding: 0.75rem;
   gap: 0.6rem;
   overflow-y: auto;
-}
-
-.side-panel:last-of-type {
-  border-right: none;
-  border-left: 1px solid var(--border-subtle);
 }
 
 .panel-heading {
@@ -123,7 +118,7 @@ body {
 .item-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .item-card {
@@ -251,27 +246,15 @@ body {
   gap: 0;
 }
 
-/* ─── Center Stage ─── */
+/* ─── Jar Column (jar + timeline) ─── */
 
-.center-stage {
+.jar-column {
   flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--bg-jar-area);
   overflow: hidden;
   min-width: 0;
-}
-
-.center-heading {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-subtle);
-  flex-shrink: 0;
 }
 
 .jar-area {
@@ -554,8 +537,8 @@ body {
   background: var(--bg-timeline);
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-subtle);
-  padding: 0.6rem 1rem;
-  gap: 1rem;
+  padding: 0.55rem 1rem;
+  gap: 0.8rem;
   flex-shrink: 0;
 }
 
@@ -703,9 +686,9 @@ body {
 
 /* ─── Responsive ─── */
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .side-panel {
-    width: 185px;
+    width: 200px;
   }
 
   .item-icon {
@@ -719,7 +702,7 @@ body {
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 680px) {
   .game-container {
     height: auto;
     min-height: 100vh;
@@ -733,21 +716,15 @@ body {
   .side-panel {
     width: 100%;
     border-right: none;
-    border-left: none;
     border-bottom: 1px solid var(--border-subtle);
   }
 
-  .side-panel:last-of-type {
-    border-left: none;
-    border-top: 1px solid var(--border-subtle);
-  }
-
   .item-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .center-stage {
-    min-height: 400px;
+  .jar-column {
+    min-height: 420px;
   }
 
   .jar {
