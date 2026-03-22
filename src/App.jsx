@@ -51,13 +51,15 @@ function createPlant(id, type) {
 }
 
 function createFog(id) {
+  const signX = Math.random() > 0.5 ? 1 : -1;
+  const signY = Math.random() > 0.5 ? 1 : -1;
   return {
     id,
-    x: randomRange(15, 85),
-    y: randomRange(15, 55),
+    x: randomRange(20, 80),
+    y: randomRange(15, 50),
     frame: Math.floor(randomRange(0, 6)),
-    dx: randomRange(-0.6, 0.6),
-    dy: randomRange(-0.3, 0.3),
+    dx: signX * randomRange(0.4, 1.0),
+    dy: signY * randomRange(0.2, 0.6),
   };
 }
 
@@ -293,26 +295,28 @@ export default function App() {
   }, [running]);
 
   useEffect(() => {
-    if (fogs.length === 0) return undefined;
     const drift = setInterval(() => {
-      setFogs(current => current.map(fog => {
-        let { x, y, dx, dy, frame } = fog;
-        x += dx;
-        y += dy;
-        if (x < 10 || x > 90) dx = -dx;
-        if (y < 10 || y > 60) dy = -dy;
-        x = clamp(x, 10, 90);
-        y = clamp(y, 10, 60);
-        if (Math.random() < 0.05) dx += randomRange(-0.3, 0.3);
-        if (Math.random() < 0.05) dy += randomRange(-0.2, 0.2);
-        dx = clamp(dx, -0.8, 0.8);
-        dy = clamp(dy, -0.5, 0.5);
-        frame = (frame + 1) % 6;
-        return { ...fog, x, y, dx, dy, frame };
-      }));
-    }, 200);
+      setFogs(current => {
+        if (current.length === 0) return current;
+        return current.map(fog => {
+          let { x, y, dx, dy, frame } = fog;
+          x += dx;
+          y += dy;
+          if (x < 10 || x > 90) dx = -dx;
+          if (y < 10 || y > 60) dy = -dy;
+          x = clamp(x, 10, 90);
+          y = clamp(y, 10, 60);
+          if (Math.random() < 0.08) dx += randomRange(-0.4, 0.4);
+          if (Math.random() < 0.08) dy += randomRange(-0.3, 0.3);
+          dx = clamp(dx, -1.2, 1.2);
+          dy = clamp(dy, -0.7, 0.7);
+          frame = (frame + 1) % 6;
+          return { ...fog, x, y, dx, dy, frame };
+        });
+      });
+    }, 180);
     return () => clearInterval(drift);
-  }, [fogs.length]);
+  }, []);
 
   /* ── Simulation (runs when playing) ── */
   useEffect(() => {
