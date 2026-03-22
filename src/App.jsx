@@ -339,9 +339,6 @@ export default function App() {
         if (ant.phase === 'dead') return ant;
         return { ...ant, phase: 'idle', frame: (ant.frame + 1) % ANT_COLS };
       }));
-      setPlants(current => current.map(plant => ({
-        ...plant, frame: (plant.frame + 1) % PLANT_COLS,
-      })));
     }, 300);
     return () => clearInterval(idle);
   }, [running]);
