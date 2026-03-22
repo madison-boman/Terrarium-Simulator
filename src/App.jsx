@@ -8,10 +8,11 @@ const SNAIL_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 const PILLBUG_COLS = 3;
 const PILLBUG_ROWS_COUNT = 4;
 const PILLBUG_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
+const PLANT_COLS = 3;
+const PLANT_ROWS = 3;
 const PLANT_SHEET_BY_TYPE = {
   moss: '/assets/plants/moss.png',
   fern: '/assets/plants/fern.png',
-  flower: '/assets/plants/flowering.png',
 };
 
 function clamp(v, min, max) {
@@ -46,7 +47,7 @@ function createPlant(id, type) {
     id, type,
     x: randomRange(18, 82),
     size: randomRange(0.55, 0.95),
-    frame: Math.floor(randomRange(0, 4)),
+    frame: Math.floor(randomRange(0, PLANT_COLS)),
   };
 }
 
@@ -288,7 +289,7 @@ export default function App() {
         return { ...bug, phase: 'idle', frame: (bug.frame + 1) % PILLBUG_COLS };
       }));
       setPlants(current => current.map(plant => ({
-        ...plant, frame: (plant.frame + 1) % 4,
+        ...plant, frame: (plant.frame + 1) % PLANT_COLS,
       })));
     }, 300);
     return () => clearInterval(idle);
@@ -492,7 +493,6 @@ export default function App() {
               { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length, action: () => addCreature('snail'), remove: () => removeCreature('snail') },
               { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length, action: () => addPlant('moss'), remove: () => removePlant('moss') },
               { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length, action: () => addPlant('fern'), remove: () => removePlant('fern') },
-              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length, action: () => addPlant('flower'), remove: () => removePlant('flower') },
               { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers, action: addSubstrate, remove: removeSubstrate },
             ].map(({ type, icon, label, count, action, remove }) => (
               <div className="item-card" key={type}>
@@ -546,8 +546,8 @@ export default function App() {
                     left: `${plant.x}%`,
                     transform: `translateX(-50%) scale(${plant.size})`,
                     backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
-                    backgroundSize: '400% 300%',
-                    backgroundPosition: `${(plant.frame / 3) * 100}% ${(plantHealthRow / 2) * 100}%`,
+                    backgroundSize: `${PLANT_COLS * 100}% ${PLANT_ROWS * 100}%`,
+                    backgroundPosition: `${(plant.frame / (PLANT_COLS - 1)) * 100}% ${(plantHealthRow / (PLANT_ROWS - 1)) * 100}%`,
                   }} />
                 ))}
 
