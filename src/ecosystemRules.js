@@ -124,7 +124,8 @@ export function calculateEcosystemLongevity({
   const minCritical = Math.min(moistureScore, plantScore * 1.1);
   const criticalPenalty = minCritical < 0.12 ? minCritical / 0.12 : 1;
 
-  const days = Math.round(BASE_DAYS * weightedScore * criticalPenalty);
+  const raw = Math.round(BASE_DAYS * weightedScore * criticalPenalty);
+  const days = raw === 0 ? 1 : raw;
 
   // ──────────────────────────────────────
   //  VERDICT

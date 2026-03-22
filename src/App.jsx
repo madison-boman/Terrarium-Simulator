@@ -285,15 +285,10 @@ export default function App() {
     const timer = setInterval(() => {
       setDay(prev => {
         const nextDay = prev + 1;
-        if (longevity.days > 0 && nextDay >= longevity.days) {
+        if (nextDay >= longevity.days) {
           setCollapsed(true);
           setRunning(false);
-          setMessage(`Ecosystem collapsed on day ${nextDay}. ${longevity.reason}`);
-        }
-        if (longevity.days === 0) {
-          setCollapsed(true);
-          setRunning(false);
-          setMessage('Ecosystem failed immediately — jar cannot sustain life.');
+          setMessage(`Ecosystem collapsed on day ${nextDay}.`);
         }
         return nextDay;
       });
@@ -390,8 +385,11 @@ export default function App() {
   }
 
   function handlePlay() {
-    if (longevity.days === 0) {
-      setMessage(`Cannot start — ${longevity.reason}`);
+    const hasLife = snails.some(s => s.phase !== 'dead') ||
+                    pillBugs.some(b => b.phase !== 'dead') ||
+                    plants.length > 0;
+    if (!hasLife) {
+      setMessage('Cannot start — the jar is empty!');
       return;
     }
     if (collapsed) {
