@@ -303,6 +303,10 @@ export default function App() {
         if (nextDay >= longevity.days) {
           setCollapsed(true);
           setRunning(false);
+          setSnails(c => c.map(s => s.phase === 'dead' ? s : { ...s, phase: 'dead', frame: 0, vitality: 0 }));
+          setPillBugs(c => c.map(b => b.phase === 'dead' ? b : { ...b, phase: 'dead', frame: 0, vitality: 0 }));
+          setAnts(c => c.map(a => a.phase === 'dead' ? a : { ...a, phase: 'dead', frame: 0, vitality: 0 }));
+          setPlants(c => c.map(p => ({ ...p, health: 2 })));
           setTimeout(() => {
             setScore(currentScore => {
               setFinalResults({ day: nextDay, score: currentScore });
