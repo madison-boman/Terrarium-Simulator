@@ -342,7 +342,7 @@ body {
   inset: 0;
   background: url('/assets/jar effects/water levels.png') center / 100% 300% no-repeat;
   image-rendering: pixelated;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
