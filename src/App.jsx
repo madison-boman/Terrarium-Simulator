@@ -63,6 +63,7 @@ function createPlant(id, type) {
     size: randomRange(0.55, 0.95),
     frame: Math.floor(randomRange(0, PLANT_COLS)),
     health: 0,
+    age: 0,
   };
 }
 
@@ -426,17 +427,19 @@ export default function App() {
       }));
 
       setPlants(current => current.map(plant => {
+        const age = plant.age + 1;
+        if (age < 40) return { ...plant, age };
         let targetHealth;
         if (ecosystemStability >= 72) targetHealth = 0;
         else if (ecosystemStability >= 42) targetHealth = 1;
         else targetHealth = 2;
-        if (plant.health < targetHealth && Math.random() < 0.08) {
-          return { ...plant, health: plant.health + 1 };
+        if (plant.health < targetHealth && Math.random() < 0.03) {
+          return { ...plant, age, health: plant.health + 1 };
         }
-        if (plant.health > targetHealth && Math.random() < 0.04) {
-          return { ...plant, health: plant.health - 1 };
+        if (plant.health > targetHealth && Math.random() < 0.02) {
+          return { ...plant, age, health: plant.health - 1 };
         }
-        return plant;
+        return { ...plant, age };
       }));
 
       setScore(v => {
