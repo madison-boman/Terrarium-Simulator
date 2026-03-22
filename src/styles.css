@@ -439,6 +439,88 @@ body {
   filter: grayscale(1) opacity(0.5);
 }
 
+/* ─── Results Popup ─── */
+
+.results-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 12, 0.65);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+}
+
+.results-popup {
+  background: var(--bg-panel);
+  border: 3px solid var(--border-panel);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  text-align: center;
+  min-width: 300px;
+  max-width: 400px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.results-title {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--rose);
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.03em;
+}
+
+.results-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.results-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.results-stat-value {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--green-dark);
+}
+
+.results-stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-light);
+  letter-spacing: 0.04em;
+}
+
+.results-dismiss {
+  appearance: none;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 2px solid var(--green-dark);
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.results-dismiss:hover {
+  background: var(--green-dark);
+}
+
 /* ─── Timeline Bar ─── */
 
 .timeline-bar {

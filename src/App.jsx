@@ -206,6 +206,7 @@ export default function App() {
   const [soilLayers, setSoilLayers] = useState(0);
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
   const [collapsed, setCollapsed] = useState(false);
+  const [finalResults, setFinalResults] = useState(null);
 
   const snailSprite = useAsset('/assets/creatures/snail sprite.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
@@ -288,7 +289,10 @@ export default function App() {
         if (nextDay >= longevity.days) {
           setCollapsed(true);
           setRunning(false);
-          setMessage(`Ecosystem collapsed on day ${nextDay}.`);
+          setScore(currentScore => {
+            setFinalResults({ day: nextDay, score: currentScore, verdict: longevity.verdict });
+            return currentScore;
+          });
         }
         return nextDay;
       });
@@ -399,9 +403,15 @@ export default function App() {
     setRunning(v => !v);
   }
 
+  function dismissResults() {
+    setFinalResults(null);
+    resetWorld();
+  }
+
   function resetWorld() {
     setRunning(false);
     setCollapsed(false);
+    setFinalResults(null);
     setDay(0);
     setScore(0);
     setMoisture(0);
@@ -555,6 +565,25 @@ export default function App() {
         </div>
 
       </div>
+
+      {finalResults && (
+        <div className="results-overlay" onClick={dismissResults}>
+          <div className="results-popup" onClick={e => e.stopPropagation()}>
+            <h2 className="results-title">Ecosystem Collapsed</h2>
+            <div className="results-stats">
+              <div className="results-stat">
+                <span className="results-stat-value">{finalResults.day}</span>
+                <span className="results-stat-label">Days Survived</span>
+              </div>
+              <div className="results-stat">
+                <span className="results-stat-value">{finalResults.score.toLocaleString()}</span>
+                <span className="results-stat-label">Final Score</span>
+              </div>
+            </div>
+            <button className="results-dismiss" onClick={dismissResults}>Try Again</button>
+          </div>
+        </div>
+      )}
 
       {/* Bottom: Simulation Timeline */}
       <div className="timeline-bar">
