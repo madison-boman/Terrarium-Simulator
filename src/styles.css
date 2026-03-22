@@ -482,19 +482,19 @@ body {
 
 .plant {
   position: absolute;
-  bottom: 12%;
-  width: 118px;
-  aspect-ratio: 704 / 512;
+  bottom: 28%;
+  width: 180px;
+  aspect-ratio: 1 / 1;
   transform-origin: center bottom;
   pointer-events: none;
   image-rendering: pixelated;
   background-repeat: no-repeat;
 }
 
-.plant.moss { width: 120px; bottom: 12%; }
-.plant.fern { width: 112px; bottom: 11%; }
-.plant.flower { width: 100px; bottom: 11%; }
-.plant.tallplant { width: 110px; bottom: 11%; }
+.plant.moss { width: 180px; bottom: 26%; }
+.plant.fern { width: 170px; bottom: 26%; }
+.plant.flower { width: 160px; bottom: 26%; }
+.plant.tallplant { width: 175px; bottom: 26%; }
 
 /* ── Microbes ── */
 
