@@ -485,7 +485,7 @@ body {
 .plant.moss { width: 180px; bottom: 26%; }
 .plant.fern { width: 170px; bottom: 26%; }
 .plant.flower { width: 160px; bottom: 26%; }
-.plant.tallplant { width: 175px; bottom: 26%; }
+.plant.tallplant { width: 200px; aspect-ratio: 1 / 1.6; bottom: 26%; }
 
 /* ── Microbes ── */
 

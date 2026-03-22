@@ -57,10 +57,13 @@ function createAnt(id) {
 }
 
 function createPlant(id, type) {
+  const sizeRange = type === 'tallplant'
+    ? [0.75, 1.15]
+    : [0.55, 0.95];
   return {
     id, type,
     x: randomRange(18, 82),
-    size: randomRange(0.55, 0.95),
+    size: randomRange(...sizeRange),
     frame: Math.floor(randomRange(0, PLANT_COLS)),
     health: 0,
     age: 0,
