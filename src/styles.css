@@ -389,6 +389,21 @@ body {
   box-shadow: 0 0 6px rgba(60, 160, 100, 0.5);
 }
 
+/* ── Fog Puffs ── */
+
+.fog-puff {
+  position: absolute;
+  width: 128px;
+  height: 128px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  opacity: 0.65;
+  mix-blend-mode: screen;
+  z-index: 1;
+}
+
 /* ── Creature sprites ── */
 
 .creature-sprite {

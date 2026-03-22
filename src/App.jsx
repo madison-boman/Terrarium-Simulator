@@ -50,6 +50,17 @@ function createPlant(id, type) {
   };
 }
 
+function createFog(id) {
+  return {
+    id,
+    x: randomRange(15, 85),
+    y: randomRange(15, 55),
+    frame: Math.floor(randomRange(0, 6)),
+    dx: randomRange(-0.6, 0.6),
+    dy: randomRange(-0.3, 0.3),
+  };
+}
+
 function createMicrobe(id) {
   return {
     id,
@@ -204,6 +215,7 @@ export default function App() {
   const [plants, setPlants] = useState([]);
   const [microbes, setMicrobes] = useState([]);
   const [soilLayers, setSoilLayers] = useState(0);
+  const [fogs, setFogs] = useState([]);
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
   const [collapsed, setCollapsed] = useState(false);
   const [finalResults, setFinalResults] = useState(null);
@@ -279,6 +291,28 @@ export default function App() {
     }, 300);
     return () => clearInterval(idle);
   }, [running]);
+
+  useEffect(() => {
+    if (fogs.length === 0) return undefined;
+    const drift = setInterval(() => {
+      setFogs(current => current.map(fog => {
+        let { x, y, dx, dy, frame } = fog;
+        x += dx;
+        y += dy;
+        if (x < 10 || x > 90) dx = -dx;
+        if (y < 10 || y > 60) dy = -dy;
+        x = clamp(x, 10, 90);
+        y = clamp(y, 10, 60);
+        if (Math.random() < 0.05) dx += randomRange(-0.3, 0.3);
+        if (Math.random() < 0.05) dy += randomRange(-0.2, 0.2);
+        dx = clamp(dx, -0.8, 0.8);
+        dy = clamp(dy, -0.5, 0.5);
+        frame = (frame + 1) % 6;
+        return { ...fog, x, y, dx, dy, frame };
+      }));
+    }, 200);
+    return () => clearInterval(drift);
+  }, [fogs.length]);
 
   /* ── Simulation (runs when playing) ── */
   useEffect(() => {
@@ -356,7 +390,12 @@ export default function App() {
   }
 
   function addMoisture() {
-    setMoisture(v => Math.min(v + 1, 3));
+    setMoisture(v => {
+      if (v >= 3) {
+        setFogs(f => [...f, createFog(getNextId())]);
+      }
+      return v + 1;
+    });
   }
 
   function addSubstrate() {
@@ -380,7 +419,12 @@ export default function App() {
   }
 
   function removeMoisture() {
-    setMoisture(v => Math.max(v - 1, 0));
+    setMoisture(v => {
+      if (v > 3) {
+        setFogs(f => f.slice(0, -1));
+      }
+      return Math.max(v - 1, 0);
+    });
   }
 
   function removeSubstrate() {
@@ -422,6 +466,7 @@ export default function App() {
     setPillBugs([]);
     setPlants([]);
     setMicrobes([]);
+    setFogs([]);
     setMessage('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
     nextId.current = 300;
   }
@@ -466,7 +511,7 @@ export default function App() {
             <div className="card-controls">
               <button className="ctrl-btn minus" disabled={moisture === 0} onClick={removeMoisture}>−</button>
               <span className="ctrl-count">{moisture}</span>
-              <button className="ctrl-btn plus" disabled={moisture >= 3} onClick={addMoisture}>+</button>
+              <button className="ctrl-btn plus" onClick={addMoisture}>+</button>
             </div>
           </div>
         </div>
@@ -476,11 +521,21 @@ export default function App() {
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
               {moisture > 0 && (
                 <div className="water-level-overlay" style={{
-                  backgroundPosition: `0% ${((moisture - 1) / 2) * 100}%`,
+                  backgroundPosition: `0% ${((Math.min(moisture, 3) - 1) / 2) * 100}%`,
                 }} />
               )}
               {soilLayers > 0 && <div className="soil-overlay" />}
               <div className="jar-interior">
+
+                {fogs.map(fog => (
+                  <div key={fog.id} className="fog-puff" style={{
+                    left: `${fog.x}%`,
+                    top: `${fog.y}%`,
+                    backgroundImage: "url('/assets/jar effects/fog.png')",
+                    backgroundSize: '600% 100%',
+                    backgroundPosition: `${(fog.frame / 5) * 100}% 0%`,
+                  }} />
+                ))}
 
                 {plants.map(plant => (
                   <div key={plant.id} className={`plant ${plant.type}`} style={{
