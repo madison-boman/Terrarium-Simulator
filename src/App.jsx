@@ -361,9 +361,9 @@ export default function App() {
         if (age < 40) return { ...plant, age };
         let targetHealth;
         if (ecosystemStability >= 72) targetHealth = 0;
-        else if (ecosystemStability >= 42) targetHealth = 1;
+        else if (ecosystemStability >= 55) targetHealth = 1;
         else targetHealth = 2;
-        if (plant.health < targetHealth && Math.random() < 0.03) {
+        if (plant.health < targetHealth && Math.random() < 0.05) {
           return { ...plant, age, health: plant.health + 1 };
         }
         if (plant.health > targetHealth && Math.random() < 0.02) {
