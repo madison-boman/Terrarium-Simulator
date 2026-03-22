@@ -50,7 +50,7 @@ function createPillBug(id) {
 function createAnt(id) {
   return {
     id, kind: 'ant',
-    x: randomRange(20, 80), y: randomRange(60, 82),
+    x: randomRange(20, 80), y: randomRange(72, 82),
     vx: Math.random() > 0.5 ? 1.2 : -1.2,
     phase: 'moving', frame: 0, vitality: randomRange(42, 62),
   };
@@ -418,7 +418,7 @@ export default function App() {
       setAnts(current => current.map(ant => {
         if (ant.phase === 'dead') return ant;
         let { phase, vx, x, vitality } = ant;
-        const y = clamp(ant.y + randomRange(-0.3, 0.3), 60, 82);
+        const y = clamp(ant.y + randomRange(-0.3, 0.3), 70, 82);
         vitality = clamp(vitality - 0.24 - (moisture === 0 ? 0.2 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...ant, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.04) phase = 'idle';
