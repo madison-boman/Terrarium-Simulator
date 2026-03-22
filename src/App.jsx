@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { calculateEcosystemLongevity } from './ecosystemRules';
 
 const SNAIL_COLS = 3;
 const SNAIL_ROWS_COUNT = 4;
@@ -7,10 +8,17 @@ const SNAIL_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
 const PILLBUG_COLS = 3;
 const PILLBUG_ROWS_COUNT = 4;
 const PILLBUG_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
+
+const ANT_COLS = 3;
+const ANT_ROWS_COUNT = 4;
+const ANT_ROWS = { moving: 0, turning: 1, idle: 2, dead: 3 };
+const PLANT_COLS = 3;
+const PLANT_ROWS = 3;
 const PLANT_SHEET_BY_TYPE = {
   moss: '/assets/plants/moss.png',
   fern: '/assets/plants/fern.png',
   flower: '/assets/plants/flowering.png',
+  tallplant: '/assets/plants/tall plant.png',
 };
 
 function clamp(v, min, max) {
@@ -39,13 +47,36 @@ function createPillBug(id) {
   };
 }
 
+function createAnt(id) {
+  return {
+    id, kind: 'ant',
+    x: randomRange(12, 88), y: randomRange(60, 90),
+    vx: Math.random() > 0.5 ? 1.2 : -1.2,
+    phase: 'moving', frame: 0, vitality: randomRange(60, 90),
+  };
+}
 
 function createPlant(id, type) {
   return {
     id, type,
     x: randomRange(18, 82),
     size: randomRange(0.55, 0.95),
-    frame: Math.floor(randomRange(0, 4)),
+    frame: Math.floor(randomRange(0, PLANT_COLS)),
+    health: 0,
+    age: 0,
+  };
+}
+
+function createFog(id) {
+  const signX = Math.random() > 0.5 ? 1 : -1;
+  const signY = Math.random() > 0.5 ? 1 : -1;
+  return {
+    id,
+    x: randomRange(20, 80),
+    y: randomRange(15, 50),
+    frame: Math.floor(randomRange(0, 6)),
+    dx: signX * randomRange(0.4, 1.0),
+    dy: signY * randomRange(0.2, 0.6),
   };
 }
 
@@ -106,6 +137,22 @@ function SnailIcon() {
   );
 }
 
+function AntIcon() {
+  return (
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <ellipse cx="28" cy="48" rx="10" ry="7" fill="#3A2A1A" />
+      <ellipse cx="46" cy="46" rx="14" ry="9" fill="#4A3A2A" />
+      <circle cx="18" cy="44" r="6" fill="#3A2A1A" />
+      <circle cx="14" cy="38" r="2" fill="#2A1A0A" />
+      <circle cx="20" cy="36" r="2" fill="#2A1A0A" />
+      <line x1="14" y1="38" x2="8" y2="28" stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="20" y1="36" x2="18" y2="26" stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
+      {[24, 32, 42, 50, 56].map((x, i) => (
+        <line key={x} x1={x} y1={i < 2 ? 54 : 54} x2={x + (i < 2 ? -6 : i === 2 ? 0 : 6)} y2={66} stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
+      ))}
+    </svg>
+  );
+}
 
 function WaterDropIcon() {
   return (
@@ -169,6 +216,20 @@ function FlowerIcon() {
   );
 }
 
+function TallPlantIcon() {
+  return (
+    <svg viewBox="0 0 80 80" className="item-icon">
+      <line x1="40" y1="76" x2="40" y2="8" stroke="#3A7A35" strokeWidth="3" />
+      <ellipse cx="30" cy="64" rx="10" ry="4" fill="#4A9A45" transform="rotate(-15 30 64)" />
+      <ellipse cx="50" cy="56" rx="10" ry="4" fill="#5AAA55" transform="rotate(15 50 56)" />
+      <ellipse cx="28" cy="44" rx="12" ry="5" fill="#4A9A45" transform="rotate(-20 28 44)" />
+      <ellipse cx="52" cy="34" rx="12" ry="5" fill="#5AAA55" transform="rotate(18 52 34)" />
+      <ellipse cx="32" cy="22" rx="10" ry="4.5" fill="#4A9A45" transform="rotate(-15 32 22)" />
+      <ellipse cx="40" cy="10" rx="6" ry="8" fill="#5AAA55" />
+    </svg>
+  );
+}
+
 function SoilIcon() {
   return (
     <svg viewBox="0 0 80 80" className="item-icon">
@@ -200,17 +261,22 @@ export default function App() {
 
   const [snails, setSnails] = useState([]);
   const [pillBugs, setPillBugs] = useState([]);
+  const [ants, setAnts] = useState([]);
   const [plants, setPlants] = useState([]);
   const [microbes, setMicrobes] = useState([]);
   const [soilLayers, setSoilLayers] = useState(0);
+  const [fogs, setFogs] = useState([]);
   const [message, setMessage] = useState('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
+  const [collapsed, setCollapsed] = useState(false);
+  const [finalResults, setFinalResults] = useState(null);
 
   const snailSprite = useAsset('/assets/creatures/snail sprite.png');
   const jarSprite = useAsset('/assets/jar/jar.png');
 
   const livingSnails = useMemo(() => snails.filter(s => s.phase !== 'dead').length, [snails]);
   const livingPillBugs = useMemo(() => pillBugs.filter(b => b.phase !== 'dead').length, [pillBugs]);
-  const totalCreatures = livingSnails + livingPillBugs;
+  const livingAnts = useMemo(() => ants.filter(a => a.phase !== 'dead').length, [ants]);
+  const totalCreatures = livingSnails + livingPillBugs + livingAnts;
 
   const ecosystemStability = useMemo(() => {
     const moistureFit = moisture === 2 ? 100 : moisture === 1 ? 75 : moisture === 3 ? 60 : 30;
@@ -218,7 +284,7 @@ export default function App() {
     const soilFit = 100 - Math.abs(soil - 58) * 1.3;
     const biodiversity = clamp(
       plants.length * 6 + microbes.length * 0.7 +
-      livingSnails * 7 + livingPillBugs * 5,
+      livingSnails * 7 + livingPillBugs * 5 + livingAnts * 4,
       0, 100
     );
     const organismPressure = Math.max(0, totalCreatures * 6 - plants.length * 4);
@@ -230,15 +296,24 @@ export default function App() {
       0, 100
     );
   }, [moisture, lighting, soil, plants.length, microbes.length,
-      livingSnails, livingPillBugs,
+      livingSnails, livingPillBugs, livingAnts,
       totalCreatures, soilLayers]);
 
-  const plantHealthRow = useMemo(() => {
-    if (ecosystemStability >= 72) return 0;
-    if (ecosystemStability >= 42) return 1;
-    return 2;
-  }, [ecosystemStability]);
 
+  const longevity = useMemo(
+    () =>
+      calculateEcosystemLongevity({
+        plants,
+        snails,
+        pillBugs,
+        ants,
+        moisture,
+        lighting,
+        soil,
+        soilLayers,
+      }),
+    [plants, snails, pillBugs, ants, moisture, lighting, soil, soilLayers]
+  );
 
   const timelineProgress = useMemo(() => {
     if (day >= 365) return 100;
@@ -257,18 +332,56 @@ export default function App() {
         if (bug.phase === 'dead') return bug;
         return { ...bug, phase: 'idle', frame: (bug.frame + 1) % PILLBUG_COLS };
       }));
-      setPlants(current => current.map(plant => ({
-        ...plant, frame: (plant.frame + 1) % 4,
-      })));
+      setAnts(current => current.map(ant => {
+        if (ant.phase === 'dead') return ant;
+        return { ...ant, phase: 'idle', frame: (ant.frame + 1) % ANT_COLS };
+      }));
     }, 300);
     return () => clearInterval(idle);
   }, [running]);
 
+  useEffect(() => {
+    const drift = setInterval(() => {
+      setFogs(current => {
+        if (current.length === 0) return current;
+        return current.map(fog => {
+          let { x, y, dx, dy, frame } = fog;
+          x += dx;
+          y += dy;
+          if (x < 10 || x > 90) dx = -dx;
+          if (y < 10 || y > 60) dy = -dy;
+          x = clamp(x, 10, 90);
+          y = clamp(y, 10, 60);
+          if (Math.random() < 0.08) dx += randomRange(-0.4, 0.4);
+          if (Math.random() < 0.08) dy += randomRange(-0.3, 0.3);
+          dx = clamp(dx, -1.2, 1.2);
+          dy = clamp(dy, -0.7, 0.7);
+          frame = (frame + 1) % 6;
+          return { ...fog, x, y, dx, dy, frame };
+        });
+      });
+    }, 180);
+    return () => clearInterval(drift);
+  }, []);
+
   /* ── Simulation (runs when playing) ── */
   useEffect(() => {
-    if (!running) return undefined;
+    if (!running || collapsed) return undefined;
     const timer = setInterval(() => {
-      setDay(v => v + 1);
+      setDay(prev => {
+        const nextDay = prev + 1;
+        if (nextDay >= longevity.days) {
+          setCollapsed(true);
+          setRunning(false);
+          setTimeout(() => {
+            setScore(currentScore => {
+              setFinalResults({ day: nextDay, score: currentScore });
+              return currentScore;
+            });
+          }, 3000);
+        }
+        return nextDay;
+      });
 
       setSnails(current => current.map(snail => {
         if (snail.phase === 'dead') return snail;
@@ -299,6 +412,36 @@ export default function App() {
         return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % PILLBUG_COLS, vitality };
       }));
 
+      setAnts(current => current.map(ant => {
+        if (ant.phase === 'dead') return ant;
+        let { phase, vx, x, vitality } = ant;
+        const y = clamp(ant.y + randomRange(-0.3, 0.3), 58, 92);
+        vitality = clamp(vitality - (moisture === 0 ? 0.2 : 0) + soil * 0.01, 0, 100);
+        if (vitality <= 0) return { ...ant, vitality: 0, phase: 'dead', frame: 0 };
+        if (Math.random() < 0.04) phase = 'idle';
+        else if (phase === 'idle' && Math.random() < 0.4) phase = 'moving';
+        if (phase === 'moving') x += vx * 0.6;
+        if (x < 8 || x > 92) { phase = 'turning'; vx = -vx; x = clamp(x, 8, 92); }
+        else if (phase === 'turning' && Math.random() < 0.5) phase = 'moving';
+        return { ...ant, x, y, vx, phase, frame: (ant.frame + 1) % ANT_COLS, vitality };
+      }));
+
+      setPlants(current => current.map(plant => {
+        const age = plant.age + 1;
+        if (age < 40) return { ...plant, age };
+        let targetHealth;
+        if (ecosystemStability >= 72) targetHealth = 0;
+        else if (ecosystemStability >= 42) targetHealth = 1;
+        else targetHealth = 2;
+        if (plant.health < targetHealth && Math.random() < 0.03) {
+          return { ...plant, age, health: plant.health + 1 };
+        }
+        if (plant.health > targetHealth && Math.random() < 0.02) {
+          return { ...plant, age, health: plant.health - 1 };
+        }
+        return { ...plant, age };
+      }));
+
       setScore(v => {
         const humidityBonus = moisture === 2 ? 24 : moisture === 1 ? 16 : moisture === 3 ? 12 : 0;
         const stabilityBonus = ecosystemStability * 0.8;
@@ -311,7 +454,24 @@ export default function App() {
       else setMessage('System stable — keep tuning for a higher score.');
     }, 150);
     return () => clearInterval(timer);
-  }, [running, moisture, soil, ecosystemStability, totalCreatures]);
+  }, [running, collapsed, moisture, soil, ecosystemStability, totalCreatures, longevity.days, longevity.reason]);
+
+  useEffect(() => {
+    if (!running || collapsed) return;
+    const allDead = totalCreatures === 0 && plants.every(p => p.health >= 2);
+    const hasOrganisms = snails.length > 0 || pillBugs.length > 0 || ants.length > 0 || plants.length > 0;
+    if (!hasOrganisms || !allDead) return;
+
+    setCollapsed(true);
+    setRunning(false);
+    const timeout = setTimeout(() => {
+      setScore(currentScore => {
+        setFinalResults({ day, score: currentScore });
+        return currentScore;
+      });
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [running, collapsed, totalCreatures, plants, snails.length, pillBugs.length, ants.length, day]);
 
   const jarOpen = !running;
   const groundHeight = soilLayers > 0 ? 20 + soilLayers * 4 : 0;
@@ -321,6 +481,7 @@ export default function App() {
     switch (type) {
       case 'pillbug': setPillBugs(c => [...c, createPillBug(id)]); break;
       case 'snail':   setSnails(c => [...c, createSnail(id)]); break;
+      case 'ant':     setAnts(c => [...c, createAnt(id)]); break;
     }
   }
 
@@ -329,18 +490,27 @@ export default function App() {
   }
 
   function addMoisture() {
-    setMoisture(v => Math.min(v + 1, 3));
+    setMoisture(v => {
+      if (v >= 3) {
+        setFogs(f => [...f, createFog(getNextId())]);
+      }
+      return v + 1;
+    });
   }
 
-  function addSubstrate() {
-    setSoilLayers(v => Math.min(v + 1, 5));
-    setSoil(v => clamp(v + 6, 0, 100));
+  function toggleSoil() {
+    setSoilLayers(v => {
+      const next = v > 0 ? 0 : 1;
+      setSoil(next > 0 ? 62 : 56);
+      return next;
+    });
   }
 
   function removeCreature(type) {
     switch (type) {
       case 'pillbug': setPillBugs(c => c.length ? c.slice(0, -1) : c); break;
       case 'snail':   setSnails(c => c.length ? c.slice(0, -1) : c); break;
+      case 'ant':     setAnts(c => c.length ? c.slice(0, -1) : c); break;
     }
   }
 
@@ -353,16 +523,40 @@ export default function App() {
   }
 
   function removeMoisture() {
-    setMoisture(v => Math.max(v - 1, 0));
+    setMoisture(v => {
+      if (v > 3) {
+        setFogs(f => f.slice(0, -1));
+      }
+      return Math.max(v - 1, 0);
+    });
   }
 
-  function removeSubstrate() {
-    setSoilLayers(v => Math.max(v - 1, 0));
-    setSoil(v => clamp(v - 6, 0, 100));
+
+  function handlePlay() {
+    const hasLife = snails.some(s => s.phase !== 'dead') ||
+                    pillBugs.some(b => b.phase !== 'dead') ||
+                    ants.some(a => a.phase !== 'dead') ||
+                    plants.length > 0;
+    if (!hasLife) {
+      setMessage('Cannot start — the jar is empty!');
+      return;
+    }
+    if (collapsed) {
+      setMessage('Ecosystem has collapsed. Reset to try again.');
+      return;
+    }
+    setRunning(v => !v);
+  }
+
+  function dismissResults() {
+    setFinalResults(null);
+    resetWorld();
   }
 
   function resetWorld() {
     setRunning(false);
+    setCollapsed(false);
+    setFinalResults(null);
     setDay(0);
     setScore(0);
     setMoisture(0);
@@ -371,8 +565,10 @@ export default function App() {
     setSoilLayers(0);
     setSnails([]);
     setPillBugs([]);
+    setAnts([]);
     setPlants([]);
     setMicrobes([]);
+    setFogs([]);
     setMessage('Your jar is empty! Add creatures, plants, and substrate to build your terrarium.');
     nextId.current = 300;
   }
@@ -381,30 +577,53 @@ export default function App() {
   return (
     <div className="game-container">
       {/* Title */}
-      <h1 className="game-title">Terrarium Simulator Game</h1>
+      <div className="game-hud-bar">
+        <span className="hud-title">Terrarium Simulator</span>
+        <div className="hud-stats">
+          <div className="hud-stat">
+            <span className="hud-stat-icon">☀</span>
+            <span className="hud-stat-label">Day</span>
+            <span className="hud-stat-value">{day}</span>
+          </div>
+          <div className="hud-stat">
+            <span className="hud-stat-icon">★</span>
+            <span className="hud-stat-label">Score</span>
+            <span className="hud-stat-value">{score.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
 
-      {/* Main Row: Left Panel / Jar / Right Panel */}
+      {/* Main Row: Sidebar / Jar + Timeline */}
       <div className="main-row">
 
-        {/* Left: Creatures & Elements */}
         <div className="side-panel">
-          <h2 className="panel-heading">Creatures & Elements</h2>
+          <h2 className="panel-heading">Add to Jar</h2>
           <div className="item-grid">
             {[
-              { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length },
-              { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length },
-            ].map(({ type, icon, label, count }) => (
+              { type: 'pillbug', icon: <PillBugIcon />, label: 'Pill Bug', count: pillBugs.length, action: () => addCreature('pillbug'), remove: () => removeCreature('pillbug') },
+              { type: 'snail', icon: <SnailIcon />, label: 'Snail', count: snails.length, action: () => addCreature('snail'), remove: () => removeCreature('snail') },
+              { type: 'ant', icon: <AntIcon />, label: 'Ant', count: ants.length, action: () => addCreature('ant'), remove: () => removeCreature('ant') },
+              { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length, action: () => addPlant('moss'), remove: () => removePlant('moss') },
+              { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length, action: () => addPlant('fern'), remove: () => removePlant('fern') },
+              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length, action: () => addPlant('flower'), remove: () => removePlant('flower') },
+              { type: 'tallplant', icon: <TallPlantIcon />, label: 'Tall Plant', count: plants.filter(p => p.type === 'tallplant').length, action: () => addPlant('tallplant'), remove: () => removePlant('tallplant') },
+            ].map(({ type, icon, label, count, action, remove }) => (
               <div className="item-card" key={type}>
                 {icon}
                 <span className="item-name">{label}</span>
                 <div className="card-controls">
-                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => removeCreature(type)}>−</button>
+                  <button className="ctrl-btn minus" disabled={count === 0} onClick={remove}>−</button>
                   <span className="ctrl-count">{count}</span>
-                  <button className="ctrl-btn plus" onClick={() => addCreature(type)}>+</button>
+                  <button className="ctrl-btn plus" onClick={action}>+</button>
                 </div>
               </div>
             ))}
           </div>
+          <button className={`toggle-card ${soilLayers > 0 ? 'active' : ''}`} onClick={toggleSoil}>
+            <SoilIcon />
+            <span className="item-name">Soil</span>
+            <span className="toggle-state">{soilLayers > 0 ? 'On' : 'Off'}</span>
+          </button>
           <div className="item-card moisture-card">
             <WaterDropIcon />
             <div className="moisture-text">
@@ -414,31 +633,39 @@ export default function App() {
             <div className="card-controls">
               <button className="ctrl-btn minus" disabled={moisture === 0} onClick={removeMoisture}>−</button>
               <span className="ctrl-count">{moisture}</span>
-              <button className="ctrl-btn plus" disabled={moisture >= 3} onClick={addMoisture}>+</button>
+              <button className="ctrl-btn plus" onClick={addMoisture}>+</button>
             </div>
           </div>
         </div>
 
-        {/* Center: Glass Jar */}
-        <div className="center-stage">
-          <h2 className="center-heading">Glass Jar Simulation View</h2>
+        <div className="jar-column">
           <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>
               {moisture > 0 && (
                 <div className="water-level-overlay" style={{
-                  backgroundPosition: `0% ${((moisture - 1) / 2) * 100}%`,
+                  backgroundPosition: `0% ${((Math.min(moisture, 3) - 1) / 2) * 100}%`,
                 }} />
               )}
               {soilLayers > 0 && <div className="soil-overlay" />}
               <div className="jar-interior">
+
+                {fogs.map(fog => (
+                  <div key={fog.id} className="fog-puff" style={{
+                    left: `${fog.x}%`,
+                    top: `${fog.y}%`,
+                    backgroundImage: "url('/assets/jar effects/fog.png')",
+                    backgroundSize: '600% 100%',
+                    backgroundPosition: `${(fog.frame / 5) * 100}% 0%`,
+                  }} />
+                ))}
 
                 {plants.map(plant => (
                   <div key={plant.id} className={`plant ${plant.type}`} style={{
                     left: `${plant.x}%`,
                     transform: `translateX(-50%) scale(${plant.size})`,
                     backgroundImage: `url('${PLANT_SHEET_BY_TYPE[plant.type]}')`,
-                    backgroundSize: '400% 300%',
-                    backgroundPosition: `${(plant.frame / 3) * 100}% ${(plantHealthRow / 2) * 100}%`,
+                    backgroundSize: `${PLANT_COLS * 100}% ${PLANT_ROWS * 100}%`,
+                    backgroundPosition: `${(plant.health / (PLANT_COLS - 1)) * 100}% ${(plant.frame / (PLANT_ROWS - 1)) * 100}%`,
                   }} />
                 ))}
 
@@ -462,6 +689,18 @@ export default function App() {
                   );
                 })}
 
+                {ants.map(ant => {
+                  const antRow = ANT_ROWS[ant.phase] ?? ANT_ROWS.idle;
+                  return (
+                    <div key={ant.id} className={`ant-sprite ${ant.phase === 'dead' ? 'dead' : ''}`} style={{
+                      left: `${ant.x}%`, top: `${ant.y}%`,
+                      transform: `translate(-50%, -50%) scaleX(${ant.vx < 0 ? -1 : 1})`,
+                      backgroundImage: "url('/assets/creatures/ant.png')",
+                      backgroundSize: `${ANT_COLS * 100}% ${ANT_ROWS_COUNT * 100}%`,
+                      backgroundPosition: `${(ant.frame / (ANT_COLS - 1)) * 100}% ${(antRow / (ANT_ROWS_COUNT - 1)) * 100}%`,
+                    }} />
+                  );
+                })}
 
                 {snails.map(snail => {
                   const flip = snail.vx < 0 ? -1 : 1;
@@ -489,57 +728,53 @@ export default function App() {
               <div className="jar-border-overlay" />
             </div>
           </div>
-        </div>
 
-        {/* Right: Plants & Substrate */}
-        <div className="side-panel">
-          <h2 className="panel-heading">Plants & Substrate</h2>
-          <div className="item-grid">
-            {[
-              { type: 'moss', icon: <MossIcon />, label: 'Moss', count: plants.filter(p => p.type === 'moss').length },
-              { type: 'fern', icon: <FernIcon />, label: 'Fern', count: plants.filter(p => p.type === 'fern').length },
-              { type: 'flower', icon: <FlowerIcon />, label: 'Flower', count: plants.filter(p => p.type === 'flower').length },
-              { type: 'soil', icon: <SoilIcon />, label: 'Soil', count: soilLayers },
-            ].map(({ type, icon, label, count }) => (
-              <div className="item-card" key={type}>
-                {icon}
-                <span className="item-name">{label}</span>
-                <div className="card-controls">
-                  <button className="ctrl-btn minus" disabled={count === 0} onClick={() => type === 'soil' ? removeSubstrate() : removePlant(type)}>−</button>
-                  <span className="ctrl-count">{count}</span>
-                  <button className="ctrl-btn plus" onClick={() => type === 'soil' ? addSubstrate() : addPlant(type)}>+</button>
-                </div>
+          <div className="timeline-bar">
+            <div className="timeline-left">
+              <span className="timeline-label">Timeline</span>
+            </div>
+            <div className="timeline-center">
+              <div className="timeline-markers">
+                <span className={day >= 0 ? 'tm active' : 'tm'}>Day 0</span>
+                <span className={day >= 7 ? 'tm active' : 'tm'}>Week 1</span>
+                <span className={day >= 30 ? 'tm active' : 'tm'}>Month 1</span>
+                <span className={day >= 365 ? 'tm active' : 'tm'}>Year 1</span>
               </div>
-            ))}
+              <div className="timeline-track">
+                <div className="timeline-fill" style={{ width: `${timelineProgress}%` }} />
+                <div className="timeline-thumb" style={{ left: `${timelineProgress}%` }} />
+              </div>
+            </div>
+            <div className="timeline-right">
+              <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={handlePlay} disabled={collapsed}>
+                {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
+              </button>
+              <button className="reset-btn" onClick={resetWorld}>Reset</button>
+            </div>
           </div>
         </div>
 
       </div>
 
-      {/* Bottom: Simulation Timeline */}
-      <div className="timeline-bar">
-        <div className="timeline-left">
-          <span className="timeline-label">Simulation Timeline</span>
-        </div>
-        <div className="timeline-center">
-          <div className="timeline-markers">
-            <span className={day >= 0 ? 'tm active' : 'tm'}>Day 0</span>
-            <span className={day >= 7 ? 'tm active' : 'tm'}>Week 1</span>
-            <span className={day >= 30 ? 'tm active' : 'tm'}>Month 1</span>
-            <span className={day >= 365 ? 'tm active' : 'tm'}>Year 1</span>
+      {finalResults && (
+        <div className="results-overlay" onClick={dismissResults}>
+          <div className="results-popup" onClick={e => e.stopPropagation()}>
+            <h2 className="results-title">Ecosystem Collapsed</h2>
+            <div className="results-stats">
+              <div className="results-stat">
+                <span className="results-stat-value">{finalResults.day}</span>
+                <span className="results-stat-label">Days Survived</span>
+              </div>
+              <div className="results-stat">
+                <span className="results-stat-value">{finalResults.score.toLocaleString()}</span>
+                <span className="results-stat-label">Final Score</span>
+              </div>
+            </div>
+            <button className="results-dismiss" onClick={dismissResults}>Try Again</button>
           </div>
-          <div className="timeline-track">
-            <div className="timeline-fill" style={{ width: `${timelineProgress}%` }} />
-            <div className="timeline-thumb" style={{ left: `${timelineProgress}%` }} />
-          </div>
         </div>
-        <div className="timeline-right">
-          <button className={`play-btn ${running ? 'is-playing' : ''}`} onClick={() => setRunning(v => !v)}>
-            {running ? 'Pause' : 'Play'}{running ? '' : ' ▶'}
-          </button>
-          <button className="reset-btn" onClick={resetWorld}>Reset</button>
-        </div>
-      </div>
+      )}
+
     </div>
   );
 }

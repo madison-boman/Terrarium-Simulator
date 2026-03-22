@@ -1,39 +1,49 @@
 /* ═══════════════════════════════════════════════════
-   Terrarium Simulator Game – Wireframe-faithful UI
-   Clean, bordered, game-board aesthetic with color
+   Terrarium Simulator – Game UI
    ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
 :root {
-  --bg: #f4f0e6;
-  --bg-panel: #faf8f2;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f0ede4;
-  --bg-jar-area: #eae6d8;
-  --bg-timeline: #f0ede4;
+  --bg-deep: #f4f8f4;
+  --bg-panel: #ffffff;
+  --bg-card: #f0f6f0;
+  --bg-card-hover: #e6f0e6;
+  --bg-jar: #eaf2ea;
+  --bg-hud: #ffffff;
 
-  --border-color: #4a5a3a;
-  --border-light: #b8b0a0;
-  --border-panel: #3a4a2a;
+  --border-glow: rgba(76, 160, 96, 0.18);
+  --border-dim: rgba(76, 160, 96, 0.1);
+  --border-bright: rgba(76, 160, 96, 0.3);
 
-  --text-dark: #2a2a1a;
-  --text-medium: #5a5a40;
-  --text-light: #8a8870;
+  --text-bright: #1a2e1a;
+  --text-mid: #4a6a4a;
+  --text-dim: #8aaa8a;
 
-  --green-dark: #2d5a27;
-  --green: #3a7a32;
-  --green-light: #5aaa4a;
-  --brown-dark: #4a2a14;
-  --brown: #7a5a3a;
-  --brown-light: #a08a6a;
-  --blue: #3a7aaa;
-  --blue-light: #6aaada;
-  --amber: #d4a020;
-  --rose: #c04868;
+  --accent: #4caf68;
+  --accent-dim: #3a8a50;
+  --accent-glow: rgba(76, 175, 104, 0.15);
+  --accent-bg: rgba(76, 175, 104, 0.06);
 
-  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
-  color: var(--text-dark);
+  --green: #4caf68;
+  --green-dim: #3a8a50;
+  --green-glow: rgba(76, 175, 104, 0.15);
+
+  --gold: #e8a020;
+  --gold-dim: #c08018;
+  --gold-glow: rgba(232, 160, 32, 0.15);
+
+  --rose: #d45060;
+  --rose-dim: #b03848;
+
+  --amber: #e8a020;
+
+  --shadow-glow: 0 0 12px rgba(76, 175, 104, 0.06);
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-popup: 0 8px 40px rgba(0, 0, 0, 0.15);
+
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: var(--text-bright);
 }
 
 * {
@@ -44,7 +54,7 @@
 
 body {
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--bg-deep);
 }
 
 /* ─── Game Container ─── */
@@ -57,23 +67,66 @@ body {
   overflow: hidden;
 }
 
-/* ─── Title ─── */
+/* ─── HUD Bar ─── */
 
-.game-title {
-  text-align: center;
-  font-family: 'Patrick Hand', 'Nunito', cursive;
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--green-dark);
-  padding: 0.6rem 1rem;
-  letter-spacing: 0.02em;
-  border-bottom: 3px solid var(--border-color);
-  background: linear-gradient(180deg, #faf8f2, var(--bg));
+.game-title { display: none; }
+
+.game-hud-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: var(--bg-hud);
+  border-bottom: 1px solid var(--border-dim);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
   flex-shrink: 0;
-  text-transform: uppercase;
+  z-index: 20;
 }
 
-/* ─── Main Row (3 columns) ─── */
+.hud-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.hud-stats {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.hud-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+}
+
+.hud-stat-icon {
+  font-size: 0.85rem;
+}
+
+.hud-stat-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.hud-stat-value {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+}
+
+/* ─── Main Row ─── */
 
 .main-row {
   display: flex;
@@ -82,13 +135,13 @@ body {
   overflow: hidden;
 }
 
-/* ─── Side Panels ─── */
+/* ─── Inventory Panel ─── */
 
 .side-panel {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
-  border: 3px solid var(--border-panel);
   background: var(--bg-panel);
+  border-right: 1px solid var(--border-dim);
   display: flex;
   flex-direction: column;
   padding: 0.6rem;
@@ -97,67 +150,74 @@ body {
 }
 
 .panel-heading {
-  font-family: 'Patrick Hand', cursive;
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-dark);
-  padding-bottom: 0.45rem;
-  border-bottom: 2px solid var(--border-color);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  padding: 0.3rem 0.4rem;
+  border-bottom: 1px solid var(--border-dim);
 }
 
-/* ─── Item Cards (2-col grid) ─── */
+/* ─── Item Cards (inventory slots) ─── */
 
 .item-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .item-card {
   font-family: inherit;
-  border: 2px solid var(--border-light);
+  border: 2px solid var(--border-dim);
   border-radius: 8px;
   background: var(--bg-card);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.45rem 0.3rem;
+  padding: 0.5rem 0.3rem 0.4rem;
   gap: 0.2rem;
   position: relative;
+  transition: all 0.15s;
+  cursor: default;
+}
+
+.item-card:hover {
+  border-color: var(--border-bright);
+  box-shadow: 0 2px 8px rgba(76, 175, 104, 0.08);
+  background: var(--bg-card-hover);
 }
 
 .item-icon {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .item-name {
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-dark);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  color: var(--text-mid);
   line-height: 1.1;
   text-align: center;
 }
 
 .item-sub {
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  color: var(--text-light);
+  color: var(--text-dim);
 }
 
-/* ── Card +/- Controls ── */
+/* ── +/- Controls ── */
 
 .card-controls {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  margin-top: 0.15rem;
+  gap: 0.2rem;
+  margin-top: 0.1rem;
 }
 
 .ctrl-btn {
@@ -166,10 +226,10 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 5px;
-  border: 2px solid var(--border-light);
-  background: var(--bg-card);
-  color: var(--text-dark);
-  font-size: 1rem;
+  border: 1px solid var(--border-dim);
+  background: white;
+  color: var(--text-mid);
+  font-size: 0.9rem;
   font-weight: 800;
   cursor: pointer;
   display: grid;
@@ -180,51 +240,110 @@ body {
 }
 
 .ctrl-btn:hover:not(:disabled) {
-  border-color: var(--green);
-  background: var(--bg-card-hover);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
 }
 
 .ctrl-btn:active:not(:disabled) {
-  transform: scale(0.92);
+  transform: scale(0.9);
 }
 
 .ctrl-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.2;
   cursor: default;
 }
 
 .ctrl-btn.plus {
-  color: var(--green-dark);
+  color: var(--accent);
 }
 
 .ctrl-btn.minus {
   color: var(--rose);
 }
 
+.ctrl-btn.minus:hover:not(:disabled) {
+  border-color: var(--rose);
+  background: rgba(212, 80, 96, 0.06);
+  color: var(--rose);
+}
+
 .ctrl-count {
   min-width: 20px;
   text-align: center;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--text-dark);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Moisture & Sand full-width cards */
+/* ── Toggle card (soil) ── */
+
+.toggle-card {
+  appearance: none;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.toggle-card:hover {
+  border-color: var(--border-bright);
+  box-shadow: 0 1px 4px rgba(76, 175, 104, 0.08);
+}
+
+.toggle-card .item-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.toggle-card.active {
+  border-color: var(--green);
+  background: rgba(76, 175, 104, 0.06);
+}
+
+.toggle-state {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-dim);
+}
+
+.toggle-card.active .toggle-state {
+  color: var(--green);
+  background: rgba(76, 175, 104, 0.1);
+  border-color: rgba(76, 175, 104, 0.2);
+}
+
+/* ── Moisture card ── */
 
 .moisture-card {
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  border: 2px solid var(--border-light);
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--border-dim);
   border-radius: 8px;
   background: var(--bg-card);
 }
 
 .moisture-card .item-icon {
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
 }
 
 .moisture-text {
@@ -233,32 +352,18 @@ body {
   gap: 0;
 }
 
-/* ─── Center Stage ─── */
+/* ─── Jar Column ─── */
 
-.center-stage {
+.jar-column {
   flex: 1;
   display: flex;
   flex-direction: column;
-  border: 3px solid var(--border-panel);
-  border-left: none;
-  border-right: none;
-  background: var(--bg-jar-area);
+  background: var(--bg-jar);
   overflow: hidden;
   min-width: 0;
 }
 
-.center-heading {
-  font-family: 'Patrick Hand', cursive;
-  font-size: 1rem;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-  color: var(--text-medium);
-  padding: 0.4rem 0;
-  border-bottom: 2px solid var(--border-light);
-  letter-spacing: 0.06em;
-  flex-shrink: 0;
-}
+.center-heading { display: none; }
 
 .jar-area {
   flex: 1;
@@ -266,7 +371,7 @@ body {
   place-items: center;
   overflow: hidden;
   min-height: 0;
-  padding: 0.5rem;
+  padding: 0.75rem;
 }
 
 /* ─── Jar ─── */
@@ -285,14 +390,14 @@ body {
   inset: 14% 18% 8% 18%;
   border-radius: 10% 10% 16% 16%;
   overflow: hidden;
-  z-index: 1;
+  z-index: 5;
 }
 
 .jar-image {
   background-image: url('/assets/jar/jar.png');
   background-size: 100% 200%;
   background-repeat: no-repeat;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.1));
   image-rendering: pixelated;
 }
 
@@ -301,16 +406,16 @@ body {
 
 .jar-fallback {
   border-radius: 12% 12% 16% 16%;
-  border: 4px solid rgba(140, 180, 200, 0.45);
+  border: 3px solid rgba(100, 160, 120, 0.25);
   background: linear-gradient(
     180deg,
-    rgba(180, 210, 230, 0.15),
-    rgba(160, 190, 210, 0.1) 50%,
-    rgba(140, 170, 190, 0.15)
+    rgba(200, 230, 210, 0.15),
+    rgba(220, 240, 225, 0.08) 50%,
+    rgba(200, 230, 210, 0.15)
   );
   box-shadow:
-    inset 0 0 40px rgba(180, 210, 230, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.15);
+    inset 0 0 60px rgba(200, 230, 210, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .jar-fallback::before {
@@ -318,7 +423,7 @@ body {
   position: absolute;
   inset: 6% 8%;
   border-radius: 10%;
-  border: 2px solid rgba(200, 225, 240, 0.2);
+  border: 1.5px solid rgba(100, 160, 120, 0.1);
 }
 
 .jar-fallback-glass {
@@ -327,9 +432,9 @@ body {
   border-radius: 10%;
   background: linear-gradient(
     115deg,
-    rgba(255, 255, 255, 0.15),
-    rgba(255, 255, 255, 0.02) 35%,
-    rgba(255, 255, 255, 0.08) 80%
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.04) 35%,
+    rgba(255, 255, 255, 0.1) 80%
   );
   pointer-events: none;
   z-index: 2;
@@ -342,7 +447,7 @@ body {
   inset: 0;
   background: url('/assets/jar effects/water levels.png') center / 100% 300% no-repeat;
   image-rendering: pixelated;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -364,24 +469,23 @@ body {
   pointer-events: none;
 }
 
-
-
 /* ── Plants ── */
 
 .plant {
   position: absolute;
-  bottom: 12%;
-  width: 118px;
-  aspect-ratio: 704 / 512;
+  bottom: 28%;
+  width: 180px;
+  aspect-ratio: 1 / 1;
   transform-origin: center bottom;
   pointer-events: none;
   image-rendering: pixelated;
   background-repeat: no-repeat;
 }
 
-.plant.moss { width: 120px; bottom: 12%; }
-.plant.fern { width: 112px; bottom: 11%; }
-.plant.flower { width: 92px; aspect-ratio: 408 / 480; bottom: 11%; }
+.plant.moss { width: 180px; bottom: 26%; }
+.plant.fern { width: 170px; bottom: 26%; }
+.plant.flower { width: 160px; bottom: 26%; }
+.plant.tallplant { width: 175px; bottom: 26%; }
 
 /* ── Microbes ── */
 
@@ -390,11 +494,24 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: rgba(80, 180, 120, 0.7);
-  box-shadow: 0 0 6px rgba(60, 160, 100, 0.5);
+  background: rgba(76, 175, 104, 0.6);
+  box-shadow: 0 0 6px rgba(76, 175, 104, 0.3);
 }
 
-/* ── Creature sprites (CSS) ── */
+/* ── Fog ── */
+
+.fog-puff {
+  position: absolute;
+  width: 128px;
+  height: 128px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+}
+
+/* ── Creature sprites ── */
 
 .creature-sprite {
   position: absolute;
@@ -414,8 +531,18 @@ body {
   background-repeat: no-repeat;
 }
 
+.ant-sprite {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+}
 
-/* ── Snails ── */
+.ant-sprite.dead {
+  filter: grayscale(1) opacity(0.4);
+}
 
 .snail-sprite,
 .snail-fallback {
@@ -439,16 +566,110 @@ body {
   filter: grayscale(1) opacity(0.5);
 }
 
+/* ─── Results Popup ─── */
+
+.results-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.results-popup {
+  background: white;
+  border: 1px solid var(--border-dim);
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  text-align: center;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: var(--shadow-popup);
+  animation: slideUp 0.35s ease;
+}
+
+.results-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--rose);
+  margin-bottom: 1.5rem;
+}
+
+.results-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.results-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.results-stat-value {
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.results-stat-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.results-dismiss {
+  appearance: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  padding: 0.6rem 2rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.results-dismiss:hover {
+  background: var(--green-dim);
+  box-shadow: 0 2px 12px rgba(76, 175, 104, 0.2);
+}
+
 /* ─── Timeline Bar ─── */
 
 .timeline-bar {
   display: flex;
   align-items: center;
-  border: 3px solid var(--border-panel);
-  border-top: 3px solid var(--border-panel);
-  background: var(--bg-timeline);
+  background: white;
+  border-top: 1px solid var(--border-dim);
   padding: 0.5rem 0.8rem;
-  gap: 0.8rem;
+  gap: 0.7rem;
   flex-shrink: 0;
 }
 
@@ -457,70 +678,70 @@ body {
 }
 
 .timeline-label {
-  font-family: 'Patrick Hand', cursive;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.6rem;
+  font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-dark);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
   white-space: nowrap;
-  border: 2px solid var(--border-light);
-  border-radius: 4px;
   padding: 0.2rem 0.5rem;
+  border-radius: 4px;
   background: var(--bg-card);
+  border: 1px solid var(--border-dim);
 }
 
 .timeline-center {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
   min-width: 0;
 }
 
 .timeline-markers {
   display: flex;
   justify-content: space-between;
-  padding: 0 4px;
+  padding: 0 2px;
 }
 
 .tm {
-  font-size: 0.68rem;
+  font-size: 0.55rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--text-light);
-  letter-spacing: 0.02em;
-  transition: color 0.3s;
+  letter-spacing: 0.03em;
+  color: var(--text-dim);
+  transition: color 0.3s, text-shadow 0.3s;
 }
 
 .tm.active {
-  color: var(--green-dark);
+  color: var(--accent);
+  text-shadow: 0 0 6px var(--accent-glow);
 }
 
 .timeline-track {
   position: relative;
-  height: 10px;
+  height: 8px;
   border-radius: 999px;
-  border: 2px solid var(--border-light);
-  background: #e8e4d8;
+  background: rgba(76, 175, 104, 0.08);
+  border: 1px solid var(--border-dim);
   overflow: visible;
 }
 
 .timeline-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--green-light), var(--green));
+  background: linear-gradient(90deg, var(--green-dim), var(--green));
   transition: width 0.15s linear;
 }
 
 .timeline-thumb {
   position: absolute;
   top: 50%;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: var(--bg-card);
-  border: 3px solid var(--border-color);
+  background: var(--green);
+  border: 2px solid white;
   transform: translate(-50%, -50%);
   transition: left 0.15s linear;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
@@ -529,7 +750,7 @@ body {
 .timeline-right {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   flex-shrink: 0;
 }
 
@@ -537,76 +758,82 @@ body {
 
 .play-btn {
   appearance: none;
-  font-family: 'Patrick Hand', cursive;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
   text-transform: uppercase;
-  border: 2px solid var(--green-dark);
+  letter-spacing: 0.06em;
+  border: none;
   border-radius: 6px;
   background: var(--green);
   color: #fff;
-  padding: 0.35rem 0.9rem;
+  padding: 0.4rem 1rem;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s;
 }
 
 .play-btn:hover {
-  background: var(--green-dark);
+  background: var(--green-dim);
+  box-shadow: 0 2px 8px rgba(76, 175, 104, 0.2);
+}
+
+.play-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
 }
 
 .play-btn.is-playing {
   background: var(--amber);
-  border-color: #b08010;
-  color: var(--text-dark);
+  color: #fff;
 }
 
 .play-btn.is-playing:hover {
-  background: #c09018;
+  background: var(--gold-dim);
+  box-shadow: 0 2px 8px rgba(232, 160, 32, 0.2);
 }
 
 .reset-btn {
   appearance: none;
-  font-family: 'Patrick Hand', cursive;
-  font-size: 0.85rem;
+  font-family: inherit;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  border: 2px solid var(--border-light);
+  letter-spacing: 0.04em;
+  border: 1px solid var(--border-dim);
   border-radius: 6px;
-  background: var(--bg-card);
-  color: var(--text-medium);
-  padding: 0.3rem 0.65rem;
+  background: white;
+  color: var(--text-mid);
+  padding: 0.35rem 0.7rem;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s;
 }
 
 .reset-btn:hover {
-  border-color: var(--border-color);
-  color: var(--text-dark);
+  border-color: var(--rose);
+  color: var(--rose);
 }
-
 
 /* ─── Responsive ─── */
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .side-panel {
-    width: 180px;
+    width: 200px;
   }
 
   .item-icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
   }
 
-  .game-title {
-    font-size: 1.6rem;
-    padding: 0.4rem;
+  .hud-title {
+    font-size: 0.9rem;
   }
-
 }
 
-@media (max-width: 780px) {
+@media (max-width: 680px) {
   .game-container {
     height: auto;
     min-height: 100vh;
@@ -619,24 +846,16 @@ body {
 
   .side-panel {
     width: 100%;
-    border: 3px solid var(--border-panel);
-    border-bottom: none;
-  }
-
-  .side-panel:last-child {
-    border-top: none;
-    border-bottom: 3px solid var(--border-panel);
+    border-right: none;
+    border-bottom: 1px solid var(--border-dim);
   }
 
   .item-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .center-stage {
-    border: 3px solid var(--border-panel);
-    border-left: 3px solid var(--border-panel);
-    border-right: 3px solid var(--border-panel);
-    min-height: 400px;
+  .jar-column {
+    min-height: 420px;
   }
 
   .jar {
@@ -647,7 +866,7 @@ body {
 
   .timeline-bar {
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .timeline-center {
@@ -657,5 +876,10 @@ body {
 
   .timeline-right {
     flex-wrap: wrap;
+  }
+
+  .game-hud-bar {
+    flex-wrap: wrap;
+    gap: 0.4rem;
   }
 }
