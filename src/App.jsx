@@ -32,35 +32,38 @@ function randomRange(min, max) {
 function createSnail(id) {
   return {
     id, kind: 'snail',
-    x: randomRange(16, 84), y: randomRange(66, 82),
+    x: randomRange(22, 78), y: randomRange(66, 78),
     vx: Math.random() > 0.5 ? 1 : -1,
-    phase: 'moving', frame: 0, vitality: randomRange(70, 96),
+    phase: 'moving', frame: 0, vitality: randomRange(50, 72),
   };
 }
 
 function createPillBug(id) {
   return {
     id, kind: 'pillbug',
-    x: randomRange(14, 86), y: randomRange(72, 88),
+    x: randomRange(22, 78), y: randomRange(72, 82),
     vx: Math.random() > 0.5 ? 0.7 : -0.7,
-    phase: 'moving', frame: 0, vitality: randomRange(75, 100),
+    phase: 'moving', frame: 0, vitality: randomRange(55, 78),
   };
 }
 
 function createAnt(id) {
   return {
     id, kind: 'ant',
-    x: randomRange(12, 88), y: randomRange(60, 90),
+    x: randomRange(20, 80), y: randomRange(72, 82),
     vx: Math.random() > 0.5 ? 1.2 : -1.2,
-    phase: 'moving', frame: 0, vitality: randomRange(60, 90),
+    phase: 'moving', frame: 0, vitality: randomRange(42, 62),
   };
 }
 
 function createPlant(id, type) {
+  const sizeRange = type === 'tallplant'
+    ? [0.75, 1.15]
+    : [0.55, 0.95];
   return {
     id, type,
-    x: randomRange(18, 82),
-    size: randomRange(0.55, 0.95),
+    x: randomRange(24, 76),
+    size: randomRange(...sizeRange),
     frame: Math.floor(randomRange(0, PLANT_COLS)),
     health: 0,
     age: 0,
@@ -102,56 +105,28 @@ function useAsset(path) {
 
 /* ─── SVG Icons ─── */
 
-function PillBugIcon() {
+function SpriteIcon({ src, cols, rows }) {
   return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <ellipse cx="40" cy="44" rx="26" ry="16" fill="#8B7355" stroke="#5C4A32" strokeWidth="2" />
-      {[28, 34, 40, 46, 52].map(x => (
-        <line key={x} x1={x} y1={29} x2={x} y2={59} stroke="#5C4A32" strokeWidth="1.5" />
-      ))}
-      <circle cx="16" cy="44" r="5" fill="#A08868" stroke="#5C4A32" strokeWidth="1.5" />
-      <line x1="16" y1="39" x2="10" y2="28" stroke="#7A6548" strokeWidth="2" strokeLinecap="round" />
-      <line x1="16" y1="39" x2="6" y2="32" stroke="#7A6548" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="10" cy="27" r="2" fill="#5C4A32" />
-      <circle cx="6" cy="31" r="2" fill="#5C4A32" />
-      {[22, 30, 38, 50, 56].map((x, i) => (
-        <line key={x} x1={x} y1={59} x2={x + (i < 2 ? -4 : i === 2 ? 0 : 4)} y2={70} stroke="#7A6548" strokeWidth="2" strokeLinecap="round" />
-      ))}
-    </svg>
+    <div className="item-icon" style={{
+      backgroundImage: `url('${src}')`,
+      backgroundSize: `${cols * 100}% ${rows * 100}%`,
+      backgroundPosition: '0% 0%',
+      backgroundRepeat: 'no-repeat',
+      imageRendering: 'pixelated',
+    }} />
   );
+}
+
+function PillBugIcon() {
+  return <SpriteIcon src="/assets/creatures/pillbug.png" cols={PILLBUG_COLS} rows={PILLBUG_ROWS_COUNT} />;
 }
 
 function SnailIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <ellipse cx="36" cy="58" rx="26" ry="10" fill="#C4A87A" stroke="#8B7355" strokeWidth="2" />
-      <circle cx="50" cy="38" r="18" fill="#DCC8A0" stroke="#8B7355" strokeWidth="2.5" />
-      <path d="M50 24 C56 28 58 36 50 38 C44 34 48 28 50 24Z" fill="#B09060" opacity="0.6" />
-      <circle cx="50" cy="36" r="7" fill="none" stroke="#B09060" strokeWidth="1.5" />
-      <circle cx="50" cy="36" r="3" fill="none" stroke="#B09060" strokeWidth="1" />
-      <path d="M22 52 Q14 44 18 32" stroke="#C4A87A" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d="M22 52 Q10 48 10 36" stroke="#C4A87A" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <circle cx="18" cy="30" r="3" fill="#5A4A3A" />
-      <circle cx="10" cy="34" r="3" fill="#5A4A3A" />
-    </svg>
-  );
+  return <SpriteIcon src="/assets/creatures/snail sprite.png" cols={SNAIL_COLS} rows={SNAIL_ROWS_COUNT} />;
 }
 
 function AntIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <ellipse cx="28" cy="48" rx="10" ry="7" fill="#3A2A1A" />
-      <ellipse cx="46" cy="46" rx="14" ry="9" fill="#4A3A2A" />
-      <circle cx="18" cy="44" r="6" fill="#3A2A1A" />
-      <circle cx="14" cy="38" r="2" fill="#2A1A0A" />
-      <circle cx="20" cy="36" r="2" fill="#2A1A0A" />
-      <line x1="14" y1="38" x2="8" y2="28" stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="20" y1="36" x2="18" y2="26" stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
-      {[24, 32, 42, 50, 56].map((x, i) => (
-        <line key={x} x1={x} y1={i < 2 ? 54 : 54} x2={x + (i < 2 ? -6 : i === 2 ? 0 : 6)} y2={66} stroke="#3A2A1A" strokeWidth="1.5" strokeLinecap="round" />
-      ))}
-    </svg>
-  );
+  return <SpriteIcon src="/assets/creatures/ant.png" cols={ANT_COLS} rows={ANT_ROWS_COUNT} />;
 }
 
 function WaterDropIcon() {
@@ -170,64 +145,19 @@ function WaterDropIcon() {
 }
 
 function MossIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <ellipse cx="40" cy="66" rx="32" ry="10" fill="#3A6B35" stroke="#2A5025" strokeWidth="1.5" />
-      <ellipse cx="26" cy="56" rx="14" ry="14" fill="#4A8B45" />
-      <ellipse cx="48" cy="52" rx="16" ry="16" fill="#5A9B55" />
-      <ellipse cx="34" cy="48" rx="11" ry="11" fill="#6AAB65" />
-      <ellipse cx="54" cy="60" rx="10" ry="9" fill="#4A8B45" />
-      <circle cx="28" cy="50" r="3" fill="#82C87A" opacity="0.6" />
-      <circle cx="44" cy="44" r="3.5" fill="#82C87A" opacity="0.6" />
-      <circle cx="52" cy="54" r="2" fill="#82C87A" opacity="0.5" />
-    </svg>
-  );
+  return <SpriteIcon src="/assets/plants/moss.png" cols={PLANT_COLS} rows={PLANT_ROWS} />;
 }
 
 function FernIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <line x1="40" y1="74" x2="40" y2="14" stroke="#3A7A35" strokeWidth="3" />
-      {[
-        [40, 22, 18, 14], [40, 22, 62, 14],
-        [40, 32, 14, 24], [40, 32, 66, 24],
-        [40, 42, 16, 34], [40, 42, 64, 34],
-        [40, 52, 20, 44], [40, 52, 60, 44],
-        [40, 60, 26, 54], [40, 60, 54, 54],
-      ].map(([x1, y1, x2, y2], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4A9A45" strokeWidth="2.5" strokeLinecap="round" />
-      ))}
-      <ellipse cx="40" cy="12" rx="4" ry="6" fill="#4A9A45" />
-    </svg>
-  );
+  return <SpriteIcon src="/assets/plants/fern.png" cols={PLANT_COLS} rows={PLANT_ROWS} />;
 }
 
 function FlowerIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <line x1="40" y1="72" x2="40" y2="36" stroke="#4A8A40" strokeWidth="3" />
-      <ellipse cx="28" cy="60" rx="8" ry="4" fill="#5A9A50" transform="rotate(-25 28 60)" />
-      <ellipse cx="52" cy="54" rx="8" ry="4" fill="#5A9A50" transform="rotate(20 52 54)" />
-      {[0, 60, 120, 180, 240, 300].map((angle, i) => (
-        <ellipse key={angle} cx="40" cy="20" rx="6" ry="13" fill={i % 2 === 0 ? '#E8658A' : '#D4547A'} stroke={i % 2 === 0 ? '#C04868' : '#B03858'} strokeWidth="1" transform={`rotate(${angle} 40 28)`} />
-      ))}
-      <circle cx="40" cy="28" r="7" fill="#F4D03F" stroke="#D4B020" strokeWidth="1.5" />
-    </svg>
-  );
+  return <SpriteIcon src="/assets/plants/flowering.png" cols={PLANT_COLS} rows={PLANT_ROWS} />;
 }
 
 function TallPlantIcon() {
-  return (
-    <svg viewBox="0 0 80 80" className="item-icon">
-      <line x1="40" y1="76" x2="40" y2="8" stroke="#3A7A35" strokeWidth="3" />
-      <ellipse cx="30" cy="64" rx="10" ry="4" fill="#4A9A45" transform="rotate(-15 30 64)" />
-      <ellipse cx="50" cy="56" rx="10" ry="4" fill="#5AAA55" transform="rotate(15 50 56)" />
-      <ellipse cx="28" cy="44" rx="12" ry="5" fill="#4A9A45" transform="rotate(-20 28 44)" />
-      <ellipse cx="52" cy="34" rx="12" ry="5" fill="#5AAA55" transform="rotate(18 52 34)" />
-      <ellipse cx="32" cy="22" rx="10" ry="4.5" fill="#4A9A45" transform="rotate(-15 32 22)" />
-      <ellipse cx="40" cy="10" rx="6" ry="8" fill="#5AAA55" />
-    </svg>
-  );
+  return <SpriteIcon src={PLANT_SHEET_BY_TYPE.tallplant} cols={PLANT_COLS} rows={PLANT_ROWS} />;
 }
 
 function SoilIcon() {
@@ -373,6 +303,10 @@ export default function App() {
         if (nextDay >= longevity.days) {
           setCollapsed(true);
           setRunning(false);
+          setSnails(c => c.map(s => s.phase === 'dead' ? s : { ...s, phase: 'dead', frame: 0, vitality: 0 }));
+          setPillBugs(c => c.map(b => b.phase === 'dead' ? b : { ...b, phase: 'dead', frame: 0, vitality: 0 }));
+          setAnts(c => c.map(a => a.phase === 'dead' ? a : { ...a, phase: 'dead', frame: 0, vitality: 0 }));
+          setPlants(c => c.map(p => ({ ...p, health: 2 })));
           setTimeout(() => {
             setScore(currentScore => {
               setFinalResults({ day: nextDay, score: currentScore });
@@ -386,15 +320,15 @@ export default function App() {
       setSnails(current => current.map(snail => {
         if (snail.phase === 'dead') return snail;
         let { phase, vx, x, vitality } = snail;
-        const y = clamp(snail.y + randomRange(-0.2, 0.2), 64, 84);
+        const y = clamp(snail.y + randomRange(-0.2, 0.2), 66, 78);
         const dryPenalty = moisture === 0 ? 0.3 : 0;
         const moldPenalty = moisture === 3 ? 0.1 : 0;
-        vitality = clamp(vitality - dryPenalty - moldPenalty + soil * 0.012, 0, 100);
+        vitality = clamp(vitality - 0.22 - dryPenalty - moldPenalty + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...snail, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.03) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.3) phase = 'moving';
         if (phase === 'moving') x += vx * (0.46 + moisture * 0.15);
-        if (x < 12 || x > 88) { phase = 'turning'; vx = -vx; x = clamp(x, 12, 88); }
+        if (x < 18 || x > 82) { phase = 'turning'; vx = -vx; x = clamp(x, 18, 82); }
         else if (phase === 'turning' && Math.random() < 0.4) phase = 'moving';
         return { ...snail, x, y, vx, phase, frame: (snail.frame + 1) % (phase === 'dead' ? 1 : SNAIL_COLS), vitality };
       }));
@@ -402,26 +336,26 @@ export default function App() {
       setPillBugs(current => current.map(bug => {
         if (bug.phase === 'dead') return bug;
         let { phase, vx, x, vitality } = bug;
-        const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 90);
-        vitality = clamp(vitality - (moisture === 0 ? 0.15 : 0) + soil * 0.015, 0, 100);
+        const y = clamp(bug.y + randomRange(-0.15, 0.15), 72, 82);
+        vitality = clamp(vitality - 0.25 - (moisture === 0 ? 0.15 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...bug, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.05) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.35) phase = 'moving';
         if (phase === 'moving') x += vx * 0.35;
-        if (x < 10 || x > 90) { vx = -vx; x = clamp(x, 10, 90); }
+        if (x < 18 || x > 82) { vx = -vx; x = clamp(x, 18, 82); }
         return { ...bug, x, y, vx, phase, frame: (bug.frame + 1) % PILLBUG_COLS, vitality };
       }));
 
       setAnts(current => current.map(ant => {
         if (ant.phase === 'dead') return ant;
         let { phase, vx, x, vitality } = ant;
-        const y = clamp(ant.y + randomRange(-0.3, 0.3), 58, 92);
-        vitality = clamp(vitality - (moisture === 0 ? 0.2 : 0) + soil * 0.01, 0, 100);
+        const y = clamp(ant.y + randomRange(-0.3, 0.3), 70, 82);
+        vitality = clamp(vitality - 0.24 - (moisture === 0 ? 0.2 : 0) + soil * 0.003, 0, 100);
         if (vitality <= 0) return { ...ant, vitality: 0, phase: 'dead', frame: 0 };
         if (Math.random() < 0.04) phase = 'idle';
         else if (phase === 'idle' && Math.random() < 0.4) phase = 'moving';
         if (phase === 'moving') x += vx * 0.6;
-        if (x < 8 || x > 92) { phase = 'turning'; vx = -vx; x = clamp(x, 8, 92); }
+        if (x < 16 || x > 84) { phase = 'turning'; vx = -vx; x = clamp(x, 16, 84); }
         else if (phase === 'turning' && Math.random() < 0.5) phase = 'moving';
         return { ...ant, x, y, vx, phase, frame: (ant.frame + 1) % ANT_COLS, vitality };
       }));
@@ -431,9 +365,9 @@ export default function App() {
         if (age < 40) return { ...plant, age };
         let targetHealth;
         if (ecosystemStability >= 72) targetHealth = 0;
-        else if (ecosystemStability >= 42) targetHealth = 1;
+        else if (ecosystemStability >= 55) targetHealth = 1;
         else targetHealth = 2;
-        if (plant.health < targetHealth && Math.random() < 0.03) {
+        if (plant.health < targetHealth && Math.random() < 0.05) {
           return { ...plant, age, health: plant.health + 1 };
         }
         if (plant.health > targetHealth && Math.random() < 0.02) {
