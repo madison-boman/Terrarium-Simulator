@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { calculateEcosystemLongevity, getVerdictStyle, getTip } from './ecosystemRules';
+import { calculateEcosystemLongevity } from './ecosystemRules';
 
 const SNAIL_COLS = 3;
 const SNAIL_ROWS_COUNT = 4;
@@ -255,8 +255,6 @@ export default function App() {
     [plants, snails, pillBugs, moisture, lighting, soil, soilLayers]
   );
 
-  const daysRemaining = Math.max(0, longevity.days - day);
-
   const timelineProgress = useMemo(() => {
     if (day >= 365) return 100;
     return clamp((day / 365) * 100, 0, 100);
@@ -465,48 +463,6 @@ export default function App() {
         {/* Center: Glass Jar */}
         <div className="center-stage">
           <h2 className="center-heading">Glass Jar Simulation View</h2>
-
-          <div className="longevity-strip">
-            <div className="longevity-left">
-              <span className="verdict-badge" style={{ background: getVerdictStyle(longevity.verdict) }}>
-                {longevity.verdict}
-              </span>
-              <span className="longevity-est">
-                <strong>{longevity.days}</strong> estimated days
-              </span>
-              {running && !collapsed && (
-                <span className="longevity-remaining">
-                  <strong>{daysRemaining}</strong> remaining
-                </span>
-              )}
-              {collapsed && (
-                <span className="longevity-collapsed-tag">
-                  Collapsed day {day}
-                </span>
-              )}
-            </div>
-            <div className="longevity-factors">
-              {Object.entries(longevity.breakdown).map(([key, value]) => (
-                <div key={key} className="factor-cell" title={getTip(key, value)}>
-                  <span className="factor-label">{key}</span>
-                  <div className="factor-bar-track">
-                    <div
-                      className="factor-bar-fill"
-                      style={{
-                        width: `${value}%`,
-                        background:
-                          value >= 70 ? 'var(--green)' :
-                          value >= 40 ? 'var(--amber)' :
-                          'var(--rose)',
-                      }}
-                    />
-                  </div>
-                  <span className="factor-val">{value}</span>
-                </div>
-              ))}
-            </div>
-            <div className="longevity-msg">{longevity.reason}</div>
-          </div>
 
           <div className="jar-area">
             <div className={`jar ${jarSprite.ready ? 'jar-image' : 'jar-fallback'} ${jarOpen ? 'open' : 'sealed'}`}>

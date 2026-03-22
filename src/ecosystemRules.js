@@ -2,21 +2,6 @@ function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
 }
 
-const VERDICTS = [
-  { label: 'FAIL', color: '#c04848' },
-  { label: 'CRITICAL', color: '#c06030' },
-  { label: 'POOR', color: '#c09020' },
-  { label: 'FAIR', color: '#a0a030' },
-  { label: 'GOOD', color: '#5a9a40' },
-  { label: 'EXCELLENT', color: '#3a7a32' },
-  { label: 'PERFECT', color: '#2a6a8a' },
-];
-
-export function getVerdictStyle(verdict) {
-  const entry = VERDICTS.find((v) => v.label === verdict);
-  return entry ? entry.color : '#888';
-}
-
 /**
  * Calculate how many days a terrarium ecosystem will last.
  *
@@ -181,31 +166,3 @@ export function calculateEcosystemLongevity({
   };
 }
 
-const FACTOR_TIPS = {
-  moisture: {
-    low: 'Too dry — add water to sustain life.',
-    mid: 'Moisture is adequate but could be improved.',
-    high: 'Moisture conditions are ideal.',
-  },
-  plants: {
-    low: 'Not enough plant life — add more plants or improve lighting.',
-    mid: 'Plant cover is moderate. More variety helps.',
-    high: 'Strong plant presence supporting the ecosystem.',
-  },
-  creatures: {
-    low: 'Creature-to-plant ratio is unbalanced.',
-    mid: 'Creature population is reasonable.',
-    high: 'Creatures and plants are well-matched.',
-  },
-  balance: {
-    low: 'Low biodiversity — add different organism types.',
-    mid: 'Decent variety of life forms.',
-    high: 'Rich biodiversity strengthens resilience.',
-  },
-};
-
-export function getTip(factor, score) {
-  if (score < 35) return FACTOR_TIPS[factor].low;
-  if (score < 70) return FACTOR_TIPS[factor].mid;
-  return FACTOR_TIPS[factor].high;
-}
